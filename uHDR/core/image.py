@@ -74,8 +74,11 @@ class Image:
     # -----------------------------------------------------------------
     def write(self: Image, fileName : str):
         """write image to system."""
-
-        colour.write_image((self.cData*255.0).astype(np.uint8), fileName,  bit_depth='uint8', method= 'Imageio')
+        path, name, ext = filenamesplit(fileName)
+        if ext == "hdr":
+            colour.write_image(self.cData, fileName, bit_depth='float32', method='Imageio')
+        else:
+            colour.write_image((self.cData * 255.0).astype(np.uint8), fileName, bit_depth='uint8', method='Imageio')
     # -----------------------------------------------------------------
     def buildThumbnail(self: Image, maxSize :int= 800) -> Image:
         """build a thumbnail image."""
@@ -98,10 +101,9 @@ class Image:
         img : Image 
         path, name, ext = filenamesplit(fileName)
         if os.path.exists(fileName):
-            if ext == "jpg" :
+            if ext == "jpg" or ext == "hdr":
                 imgData :  np.ndarray = colour.read_image(fileName, bit_depth='float32', method= 'Imageio')
-                img = Image(imgData, ColorSpace.sRGB, False)
+                img = Image(imgData, ColorSpace.sRGB, ext == "hdr")
         else:
             img = Image(np.ones((600,800,3))*0.50, ColorSpace.sRGB, False)
         return img
-    # -----------------------------------------------------------------
