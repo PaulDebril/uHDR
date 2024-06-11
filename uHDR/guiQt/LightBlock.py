@@ -1,40 +1,16 @@
-# uHDR: HDR image editing software
-#   Copyright (C) 2022  remi cozot 
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-# hdrCore project 2020-2022
-# author: remi.cozot@univ-littoral.fr
+# LightBlock.py
 
-# import
-# ------------------------------------------------------------------------------------------
-from typing_extensions import Self
-from PyQt6.QtWidgets import QFrame, QVBoxLayout
-from PyQt6.QtGui import QDoubleValidator, QIntValidator 
-from PyQt6.QtCore import Qt, pyqtSignal, QLocale
-
+from PyQt6.QtWidgets import QFrame, QVBoxLayout, QSlider, QLabel
+from PyQt6.QtCore import pyqtSignal, Qt
 from guiQt.AdvanceSlider import AdvanceSlider
 from guiQt.Contrast import Contrast
 from guiQt.CurveWidget import CurveWidget
 from guiQt.MemoGroup import MemoGroup
 
-# ------------------------------------------------------------------------------------------
-# --- class ColorEditor (QFrame) ------------------------------------------------------
-# ------------------------------------------------------------------------------------------
 class LightBlock(QFrame):
-    # class attributes
-    ## signal
+    exposureChanged = pyqtSignal(float)
 
-    # constructor
-    def __init__(self : Self) -> None:
+    def __init__(self):
         super().__init__()
         self.setFrameShape(QFrame.Shape.StyledPanel)
 
@@ -45,7 +21,10 @@ class LightBlock(QFrame):
         self.topLayout : QVBoxLayout = QVBoxLayout()
         self.setLayout(self.topLayout)
 
+
         self.exposure : AdvanceSlider =AdvanceSlider('exposure',0.0,(-30,+30),(-3.0,+3.0),10)
+        self.exposureValueLabel = QLabel("Exposure: 0.0")
+        self.exposure.valueChanged.connect(self.emitExposureChanged)
         self.contrast :  Contrast =Contrast()
         self.curve :  CurveWidget =CurveWidget()
         #self.memory : MemoGroup = MemoGroup()
@@ -55,6 +34,9 @@ class LightBlock(QFrame):
         self.topLayout.addWidget(self.contrast)
         self.topLayout.addWidget(self.curve)
         #self.topLayout.addWidget(self.memory)
-# ------------------------------------------------------------------------------------------
 
-
+    def emitExposureChanged(self, value):
+        ev_value = value / 10.0  # Ajuster l'échelle si nécessaire
+        print(f"emitExposureChanged triggered with value: {value}, ev_value: {ev_value}")
+        self.exposureValueLabel.setText(f"Exposure: {ev_value:.1f}")
+        self.exposureChanged.emit(ev_value)

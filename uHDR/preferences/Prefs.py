@@ -27,6 +27,8 @@ from app.Tags import Tags
 class Prefs:
     # class attributes
     # default values: updated when Prefs.load() is called
+    target = ['python','numba','cuda']
+    computation = target[0]
     prefsFile : str = './preferences/prefs.json'    
     currentDir : str = '.'                          
     imgExt : list[str] = ['.jpg','.hdr']
@@ -39,6 +41,10 @@ class Prefs:
     tags : dict[str, dict[str,bool]] = {}
 
     gallerySize : tuple[int,int] = (2,2)
+    
+
+    verbose =True
+
 
     #
 
