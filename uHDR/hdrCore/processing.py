@@ -258,19 +258,21 @@ class exposure(Processing):
 
         if EV != defaultEV:
             # exposure is done in linear RGB
+            print("oui")
             if not res.linear:
-                
-                if pref.computation == 'python':
+                print("oui")
+                computation = 'python'
+                if computation == 'python':
                     start = timer()
                     res.colorData =     colour.cctf_decoding(res.colorData, function='sRGB')
                     res.linear =        True
 
-                elif pref.computation == 'numba':
+                elif computation == 'numba':
                     start = timer()
                     res.colorData =     numbafun.numba_cctf_sRGB_decoding(res.colorData) # encode to prime
                     res.linear =        True
 
-                elif pref.computation == 'cuda':
+                elif computation == 'cuda':
                     start = timer()
                     res.colorData =     numbafun.cuda_cctf_sRGB_decoding(res.colorData) # encode to prime
                     res.linear =        True
@@ -280,7 +282,7 @@ class exposure(Processing):
             res.colorData =     res.colorData*math.pow(2,EV)
 
         end = timer()
-        if pref.verbose: print (" [PROCESS-PROFILING](",end - start,") >> exposure(",img.name,"):", kwargs)
+        print (" [PROCESS-PROFILING](",end - start,") >> exposure(",img.name,"):", kwargs)
 
         return res
 
