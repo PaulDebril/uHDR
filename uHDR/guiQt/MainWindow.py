@@ -46,6 +46,7 @@ class MainWindow(QMainWindow):
     tagChanged : pyqtSignal = pyqtSignal(tuple,bool)
     scoreChanged : pyqtSignal = pyqtSignal(int)
     scoreSelectionChanged : pyqtSignal = pyqtSignal(list)
+    exposureChanged = pyqtSignal(float)  # Ajoutez ce signal
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -82,6 +83,9 @@ class MainWindow(QMainWindow):
         self.metaBlock.tagChanged.connect(self.CBtagChanged)
         self.metaBlock.scoreChanged.connect(self.CBscoreChanged)
         self.metaBlock.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
+
+        self.editBlock.edit.exposureChanged.connect(self.exposureChanged)
+
 
     # methods
     # -------------------------------------------------------------------

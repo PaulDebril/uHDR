@@ -47,7 +47,6 @@ class App:
         preferences.Prefs.Prefs.load()
         self.original_image = None  # Ajouter une variable pour stocker l'image originale
 
-        
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
         self.imagesManagement.setPrefs()
@@ -70,26 +69,9 @@ class App:
 
         self.mainWindow.tagChanged.connect(self.CBtagChanged)
         self.mainWindow.scoreChanged.connect(self.CBscoreChanged)
+        self.mainWindow.exposureChanged.connect(self.adjustExposure)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
-        
-        # Création de la nouvelle fenêtre pour LightBlock
-        self.lightBlockWindow = QMainWindow()
-        self.lightBlockWindow.setWindowTitle("LightBlock")
-        self.lightBlockContainer = QWidget(self.lightBlockWindow)
-        self.lightBlockLayout = QVBoxLayout(self.lightBlockContainer)
-        self.lightBlock = LightBlock()
-        self.lightBlockLayout.addWidget(self.lightBlock)
-        self.lightBlockContainer.setLayout(self.lightBlockLayout)
-        self.lightBlockWindow.setCentralWidget(self.lightBlockContainer)
-        self.lightBlockWindow.resize(400, 300)  # Définir une taille initiale
-
-        print("LightBlock instance created.")
-        print("Connecting exposureChanged signal to adjustExposure slot.")
-        self.lightBlock.exposureChanged.connect(self.adjustExposure)
-
-        # Afficher la fenêtre LightBlock
-        self.lightBlockWindow.show()
 
         self.mainWindow.setPrefs()
 
