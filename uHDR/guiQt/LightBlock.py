@@ -23,11 +23,12 @@ class LightBlock(QFrame):
         self.topLayout : QVBoxLayout = QVBoxLayout()
         self.setLayout(self.topLayout)
 
-        self.exposure : AdvanceSlider = AdvanceSlider('exposure',0.0,(-30,+30),(-3.0,+3.0),10)
+        self.exposure : AdvanceSlider = AdvanceSlider('exposure',0.0,(-30,+30),(-3.0,+3.0),20)
+        
         # self.exposureValueLabel = QLabel("Exposure: 0.0")
         self.exposure.valueChanged.connect(self.emitExposureChanged)
         
-        self.saturation : AdvanceSlider = AdvanceSlider('saturation',0.0,(-50,+50),(-1.0,+1.0),1)
+        self.saturation : AdvanceSlider = AdvanceSlider('saturation',0.0,(-50,+50),(-0.1,+0.1),10000000000)
         # self.exposureValueLabel = QLabel("Exposure: 0.0")
         self.saturation.valueChanged.connect(self.emitSaturationChanged)
 
@@ -59,6 +60,7 @@ class LightBlock(QFrame):
         self.contrastChanged.emit(value)
         
     def emitSaturationChanged(self, value):
+        
         print(f"emitSaturationChanged triggered with value: {value}")
         # self.scalingValueLabel.setText(f"Scaling: {value:.1f}")
         self.saturationChanged.emit(value)

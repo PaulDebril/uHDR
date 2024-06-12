@@ -28,8 +28,7 @@ from app.ImageFIles import ImageFiles
 from app.Tags import Tags
 from app.SelectionMap import SelectionMap
 from guiQt.LightBlock import LightBlock
-from hdrCore.processing import exposure
-from hdrCore import image, processing
+from hdrCore import image as Image, processing
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMainWindow, QApplication
 
@@ -46,6 +45,10 @@ class App:
         # loading preferences
         preferences.Prefs.Prefs.load()
         self.original_image = None  # Ajouter une variable pour stocker l'image originale
+        self.modified_image = None  # Ajouter une variable pour stocker l'image modifiée
+        self.exposure_value = 0  # Stocker la valeur d'exposition courante
+        self.contrast_value = 0  # Stocker la valeur de contraste courante
+        self.saturation_value = 0  # Stocker la valeur de saturation courante
 
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
@@ -120,11 +123,11 @@ class App:
         self.selectedImageIdx = index
         gIdx: int | None = self.selectionMap.selectedlIndexToGlobalIndex(index)
         if gIdx is not None:
-            image: ndarray = self.imagesManagement.getImage(self.imagesManagement.getImagesFilesnames()[gIdx])
+            img: ndarray = self.imagesManagement.getImage(self.imagesManagement.getImagesFilesnames()[gIdx])
             tags: Tags = self.imagesManagement.getImageTags(self.imagesManagement.getImagesFilesnames()[gIdx])
             exif: dict[str, str] = self.imagesManagement.getImageExif(self.imagesManagement.getImagesFilesnames()[gIdx])
             score: int = self.imagesManagement.getImageScore(self.imagesManagement.getImagesFilesnames()[gIdx])
-            self.mainWindow.setEditorImage(image)
+            self.mainWindow.setEditorImage(img)
             imageFilename: str = self.imagesManagement.getImagesFilesnames()[gIdx] 
             imagePath: str = self.imagesManagement.imagePath 
             self.mainWindow.setInfo(imageFilename, imagePath, *Jexif.toTuple(exif))
@@ -133,6 +136,11 @@ class App:
             if tags:
                 self.mainWindow.setTagsImage(tags.toGUI())
 
+            # Réinitialiser les images originale et modifiée
+            self.original_image = Image.Image(self.imagesManagement.imagePath, self.imagesManagement.getImagesFilesnames()[gIdx], img, Image.imageType.SDR, False, Image.ColorSpace.sRGB())
+            self.modified_image = copy.deepcopy(self.original_image)
+            self.applyAllAdjustments()
+
     def CBtagChanged(self: App, key: tuple[str, str], value: bool) -> None:
         if self.selectedImageIdx is not None:
             imageName: str | None = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
@@ -140,7 +148,7 @@ class App:
                 print(f'\t\t imageName:{imageName}')
             if imageName is not None:
                 self.imagesManagement.updateImageTag(imageName, key[0], key[1], value)
-    
+
     def CBscoreChanged(self: App, value: int) -> None:
         if self.selectedImageIdx is not None:
             imageName: str | None = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
@@ -159,82 +167,43 @@ class App:
 
     def adjustExposure(self, ev_value):
         print(f"adjustExposure called with ev_value: {ev_value}")
-        if self.selectedImageIdx is not None:
-            imageName = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
-            print(f"Selected image name: {imageName}")
-            if imageName:
-                # Si l'image originale n'a pas encore été copiée, faites-le maintenant
-                if self.original_image is None:
-                    img = self.imagesManagement.getImage(imageName)
-                    # Vérifiez si l'image est une instance de hdrCore.image.Image
-                    if not isinstance(img, image.Image):
-                        # Si ce n'est pas le cas, convertissez-la en hdrCore.image.Image
-                        img = image.Image(self.imagesManagement.imagePath, imageName, img, image.imageType.SDR, False, image.ColorSpace.sRGB())
-                    self.original_image = img  # Stocker l'image originale
+        self.exposure_value = ev_value
+        self.applyAllAdjustments()
 
-                # Créer une copie de l'image originale
-                img = copy.deepcopy(self.original_image)
-
-                exposure_processor = processing.exposure()
-                processed_image = exposure_processor.compute(img, EV=ev_value)
-
-                if isinstance(processed_image, image.Image):
-                    self.imagesManagement.images[imageName] = processed_image.colorData  # Extraire les données de l'image
-                    self.mainWindow.setEditorImage(processed_image.colorData)  # Extraire les données de l'image
-                else:
-                    print(f"Unexpected processed image type: {type(processed_image)}")
-                    
     def adjustContrast(self, value):
-        value = value * 10
-        print(f"adjustContrast called with ev_value: {value}")
-        if self.selectedImageIdx is not None:
-            imageName = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
-            print(f"Selected image name: {imageName}")
-            if imageName:
-                # Si l'image originale n'a pas encore été copiée, faites-le maintenant
-                if self.original_image is None:
-                    img = self.imagesManagement.getImage(imageName)
-                    # Vérifiez si l'image est une instance de hdrCore.image.Image
-                    if not isinstance(img, image.Image):
-                        # Si ce n'est pas le cas, convertissez-la en hdrCore.image.Image
-                        img = image.Image(self.imagesManagement.imagePath, imageName, img, image.imageType.SDR, False, image.ColorSpace.sRGB())
-                    self.original_image = img  # Stocker l'image originale
+        print(f"adjustContrast called with value: {value}")
+        self.contrast_value = value
+        self.applyAllAdjustments()
 
-                # Créer une copie de l'image originale
-                img = copy.deepcopy(self.original_image)
-
-                contrast_processor = processing.contrast()
-                processed_image = contrast_processor.compute(img, contrast=value)
-
-                if isinstance(processed_image, image.Image):
-                    self.imagesManagement.images[imageName] = processed_image.colorData  # Extraire les données de l'image
-                    self.mainWindow.setEditorImage(processed_image.colorData)  # Extraire les données de l'image
-                else:
-                    print(f"Unexpected processed image type: {type(processed_image)}")
-                    
     def adjustSaturation(self, value):
-        print(f"adjustsaturation called with value: {value}")
-        if self.selectedImageIdx is not None:
+        print(f"adjustSaturation called with value: {value}")
+        self.saturation_value = value
+        self.applyAllAdjustments()
+
+    def applyAllAdjustments(self):
+        if self.modified_image is None:
+            return
+
+        # Repartir de l'image originale
+        self.modified_image = copy.deepcopy(self.original_image)
+
+        # Appliquer les ajustements d'exposition
+        exposure_processor = processing.exposure()
+        self.modified_image = exposure_processor.compute(self.modified_image, EV=self.exposure_value)
+
+        # Appliquer les ajustements de contraste
+        contrast_processor = processing.contrast()
+        self.modified_image = contrast_processor.compute(self.modified_image, contrast=self.contrast_value)
+
+        # Appliquer les ajustements de saturation
+        saturation_processor = processing.saturation()
+        self.modified_image = saturation_processor.compute(self.modified_image, saturation=self.saturation_value)
+
+        # Mettre à jour l'image dans l'interface utilisateur
+        if isinstance(self.modified_image, Image.Image):
             imageName = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
-            print(f"Selected image name: {imageName}")
             if imageName:
-                # Si l'image originale n'a pas encore été copiée, faites-le maintenant
-                if self.original_image is None:
-                    img = self.imagesManagement.getImage(imageName)
-                    # Vérifiez si l'image est une instance de hdrCore.image.Image
-                    if not isinstance(img, image.Image):
-                        # Si ce n'est pas le cas, convertissez-la en hdrCore.image.Image
-                        img = image.Image(self.imagesManagement.imagePath, imageName, img, image.imageType.SDR, False, image.ColorSpace.sRGB())
-                    self.original_image = img  # Stocker l'image originale
-
-                # Créer une copie de l'image originale
-                img = copy.deepcopy(self.original_image)
-
-                saturation_processor = processing.saturation()
-                processed_image = saturation_processor.compute(img, saturation=value)
-
-                if isinstance(processed_image, image.Image):
-                    self.imagesManagement.images[imageName] = processed_image.colorData  # Extraire les données de l'image
-                    self.mainWindow.setEditorImage(processed_image.colorData)  # Extraire les données de l'image
-                else:
-                    print(f"Unexpected processed image type: {type(processed_image)}")
+                self.imagesManagement.images[imageName] = self.modified_image.colorData  # Extraire les données de l'image
+                self.mainWindow.setEditorImage(self.modified_image.colorData)  # Extraire les données de l'image
+        else:
+            print(f"Unexpected processed image type: {type(self.modified_image)}")
