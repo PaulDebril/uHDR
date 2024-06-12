@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
     shadowsChanged = pyqtSignal(float)
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -98,6 +99,7 @@ class MainWindow(QMainWindow):
         self.editBlock.shadowsChanged.connect(self.onShadowsChanged)
         self.editBlock.blacksChanged.connect(self.onBlacksChanged)
         self.editBlock.mediumsChanged.connect(self.onMediumsChanged)
+        self.editBlock.whitesChanged.connect(self.onWhitesChanged)
 
 
 
@@ -116,6 +118,10 @@ class MainWindow(QMainWindow):
     def onMediumsChanged(self, value: float) -> None:
         print(f"in MainWindow: {value}")
         self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.whitesChanged.emit(value)
 
     # methods
     # -------------------------------------------------------------------

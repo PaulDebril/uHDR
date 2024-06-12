@@ -35,6 +35,8 @@ class LightBlockScroll(QScrollArea):
     shadowsChanged = pyqtSignal(float)
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
+
 
     # class attributes
     ## signal
@@ -63,6 +65,7 @@ class LightBlockScroll(QScrollArea):
         self.light.shadowsChanged.connect(self.onShadowsChanged)
         self.light.blacksChanged.connect(self.onBlacksChanged)
         self.light.mediumsChanged.connect(self.onMediumsChanged)
+        self.light.whitesChanged.connect(self.onWhitesChanged)
 
 
     def onHighlightChanged(self, value: float) -> None:
@@ -80,6 +83,10 @@ class LightBlockScroll(QScrollArea):
     def onMediumsChanged(self, value: float) -> None:
         print(f"in LightBlockScroll: {value}")
         self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.whitesChanged.emit(value)
 # ------------------------------------------------------------------------------------------
 
 

@@ -53,6 +53,7 @@ class App:
         self.shadows_value = 0  # Stocker la valeur des ombres courante
         self.blacks_value = 0
         self.mediums_value = 0  # Stocker la valeur des médiums courante
+        self.whites_value = 0  # Stocker la valeur des blancs courante
 
 
         self.imagesManagement: ImageFiles = ImageFiles()
@@ -84,6 +85,7 @@ class App:
         self.mainWindow.shadowsChanged.connect(self.adjustShadows)
         self.mainWindow.blacksChanged.connect(self.adjustBlacks)
         self.mainWindow.mediumsChanged.connect(self.adjustMediums)
+        self.mainWindow.whitesChanged.connect(self.adjustWhites)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
@@ -217,10 +219,12 @@ class App:
         'shadows': [10, self.shadows_value],
         'blacks': [30, self.blacks_value],
         'mediums': [50, self.mediums_value],
-        'whites': [70, 70],
+        'whites': [70, self.whites_value],
         'highlights': [90, self.highlight_value],
         'end': [100, 100]
     }
+        
+        print('param', params)
         self.modified_image = highlights_processor.compute(self.modified_image, **params)
 
 
@@ -252,6 +256,12 @@ class App:
     def adjustMediums(self, value: float) -> None:
         print(f"adjustMediums called with value: {value}")
         self.mediums_value = value
+        self.applyAllAdjustments()
+        
+    def adjustWhites(self, value: float) -> None:
+        print('------------------dpdpdp-')
+        print(f"adjustWhites called with value: {value}")
+        self.whites_value = value
         self.applyAllAdjustments()
 
             

@@ -36,6 +36,7 @@ class EditorBlock(QSplitter):
     shadowsChanged = pyqtSignal(float)
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
 
     ## signal
 
@@ -50,6 +51,7 @@ class EditorBlock(QSplitter):
         self.edit.shadowsChanged.connect(self.onShadowsChanged)
         self.edit.blacksChanged.connect(self.onBlacksChanged)
         self.edit.mediumsChanged.connect(self.onMediumsChanged)
+        self.edit.whitesChanged.connect(self.onWhitesChanged)
 
 
         # adding widgets to self (QSplitter)
@@ -78,3 +80,7 @@ class EditorBlock(QSplitter):
     def onMediumsChanged(self, value: float) -> None:
         print(f"in EditorBlock: {value}")
         self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.whitesChanged.emit(value)
