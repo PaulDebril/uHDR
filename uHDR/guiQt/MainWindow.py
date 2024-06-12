@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
     exposureChanged = pyqtSignal(float)
     saturationChanged = pyqtSignal(float)
     contrastChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
         self.metaBlock : InfoSelPrefBlock =InfoSelPrefBlock(tags)
 
         self.editBlock : EditorBlock =EditorBlock()
+        
         self.imageGallery : AdvanceImageGallery  = AdvanceImageGallery(nbImages)
 
 
@@ -89,7 +91,11 @@ class MainWindow(QMainWindow):
         self.editBlock.edit.exposureChanged.connect(self.exposureChanged)
         self.editBlock.edit.saturationChanged.connect(self.saturationChanged)
         self.editBlock.edit.contrastChanged.connect(self.contrastChanged)
+        self.editBlock.highlightChanged.connect(self.onHighlightChanged)
 
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.highlightChanged.emit(value)
 
     # methods
     # -------------------------------------------------------------------

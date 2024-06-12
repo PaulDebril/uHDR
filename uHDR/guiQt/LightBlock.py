@@ -11,6 +11,7 @@ class LightBlock(QFrame):
     exposureChanged = pyqtSignal(float)
     contrastChanged = pyqtSignal(float)
     saturationChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)
 
     def __init__(self):
         super().__init__()
@@ -37,6 +38,8 @@ class LightBlock(QFrame):
         self.contrast.scalingChanged.connect(self.emitScalingChanged)
 
         self.curve : CurveWidget = CurveWidget()
+        self.curve.highlightChanged.connect(self.onHighlightChanged)
+
         #self.memory : MemoGroup = MemoGroup()
 
         ## add to layout
@@ -47,6 +50,10 @@ class LightBlock(QFrame):
         # self.topLayout.addWidget(self.scalingValueLabel)
         self.topLayout.addWidget(self.curve)
         #self.topLayout.addWidget(self.memory)
+
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in LightBlock: {value}")
+        self.highlightChanged.emit(value)
 
     def emitExposureChanged(self, value):
         ev_value = value / 10.0  # Ajuster l'échelle si nécessaire

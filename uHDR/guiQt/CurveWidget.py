@@ -34,6 +34,7 @@ import copy, time
 # ------------------------------------------------------------------------------------------
 
 class CurveWidget(QFrame):
+    highlightChanged = pyqtSignal(float)
     # constructor
     def __init__(self : Self) -> None:
         super().__init__()
@@ -42,8 +43,8 @@ class CurveWidget(QFrame):
         # attributes
         self.active : bool = True
         ## curve
-        self.control : dict[str, list[float]] = {'start':[0.0,0.0], 'shadows': [10.0,10.0], 'blacks': [30.0,30.0], 'mediums': [50.0,50.0], 'whites': [70.0,70.0], 'highlights': [90.0,90.0], 'end': [200.0,100.0]}
-        self.default : dict[str, list[float]] = {'start':[0.0,0.0], 'shadows': [10.0,10.0], 'blacks': [30.0,30.0], 'mediums': [50.0,50.0], 'whites': [70.0,70.0], 'highlights': [90.0,90.0], 'end': [200.0,100.0]}
+        self.control = {'start': [0.0, 0.0], 'shadows': [10.0, 10.0], 'blacks': [30.0, 30.0], 'mediums': [50.0, 50.0], 'whites': [70.0, 70.0], 'highlights': [90.0, 90.0], 'end': [100.0, 100.0]}
+        self.default = {'start': [0.0, 0.0], 'shadows': [10.0, 10.0], 'blacks': [30.0, 30.0], 'mediums': [50.0, 50.0], 'whites': [70.0, 70.0], 'highlights': [90.0, 90.0], 'end': [100.0, 100.0]}
 
         self.curve : BSpline.Curve = BSpline.Curve()
         self.curve.degree = 2
@@ -70,7 +71,7 @@ class CurveWidget(QFrame):
         self.blacks : AdvanceSliderLine = AdvanceSliderLine('blacks',self.default['blacks'][1],(0,100),(0,100),10) 
         self.mediums : AdvanceSliderLine = AdvanceSliderLine('mediums',self.default['mediums'][1],(0,100),(0,100),10) 
         self.whites : AdvanceSliderLine = AdvanceSliderLine('whites',self.default['whites'][1],(0,100),(0,100),10) 
-        self.highlights : AdvanceSliderLine = AdvanceSliderLine('highlights',self.default['highlights'][1],(0,100),(0,100),10) 
+        self.highlights = AdvanceSliderLine('highlights', self.default['highlights'][1], (0, 100), (0, 100), 10)
 
         self.vbox.addWidget(self.curveWidget)
         self.vbox.addWidget(self.containerAutoActive) #  zj add for semi-auto curve                                                                       
@@ -102,6 +103,7 @@ class CurveWidget(QFrame):
         self.mediums.valueChanged.connect(self.CBsliderChanged)
         self.whites.valueChanged.connect(self.CBsliderChanged)
         self.highlights.valueChanged.connect(self.CBsliderChanged)
+        # self.highlights.valueChanged.connect(self.emitHighlightChanged)
 
         #self.autoCurve.clicked.connect(self.controller.autoCurve)  #  zj add for semi-auto curve 
 
@@ -116,11 +118,24 @@ class CurveWidget(QFrame):
                                                                                          
     # methods
     ## callbacks
-    def CBsliderChanged(self : Self, key : str, val :int) -> None:
-        if self.active: self.setKey(key, val, False)
+    def CBsliderChanged(self : Self, key : str, val :float) -> None:
+        
+        print(f"Slider value changed: {key} = {val}")
+        if self.active:
+            self.setKey(key, val, False)
+            if key == 'highlights':
+                self.emitHighlightChanged(val)
+        # print('vaalllll', val)
+        # if self.active: 
+        #     self.setKey(key, val, False)
 
-    # methods
+            
 
+    def emitHighlightChanged(self, value: float) -> None:
+        print(f"emitHighlightChanged in CurveWidget: {value}")
+        self.highlightChanged.emit(value)
+        
+        
     ## updateKeys
     def updateKeys(self : Self) -> None:
         self.active = False

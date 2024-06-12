@@ -42,13 +42,14 @@ class App:
     # constructor
     def __init__(self: App) -> None:
         """uHDR v7 application"""
-        # loading preferences
+        # chargement des préférences
         preferences.Prefs.Prefs.load()
         self.original_image = None  # Ajouter une variable pour stocker l'image originale
         self.modified_image = None  # Ajouter une variable pour stocker l'image modifiée
         self.exposure_value = 0  # Stocker la valeur d'exposition courante
-        self.contrast_value = 0  # Stocker la valeur de contraste courante
+        self.contrast_value = 0  # Stocker la valeur de contraste courant
         self.saturation_value = 0  # Stocker la valeur de saturation courante
+        self.highlight_value = 90  # Assurez-vous que cette valeur est correctement initialisée
 
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
@@ -75,11 +76,13 @@ class App:
         self.mainWindow.exposureChanged.connect(self.adjustExposure)
         self.mainWindow.saturationChanged.connect(self.adjustSaturation)
         self.mainWindow.contrastChanged.connect(self.adjustContrast)
+        self.mainWindow.highlightChanged.connect(self.adjustHighlights)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
         self.mainWindow.setPrefs()
-
+        
+        
     def getImageRangeIndex(self: App) -> tuple[int, int]:
         """return the index range (min index, max index) of images displayed by the gallery."""
         return self.mainWindow.imageGallery.getImageRangeIndex()
@@ -199,6 +202,20 @@ class App:
         saturation_processor = processing.saturation()
         self.modified_image = saturation_processor.compute(self.modified_image, saturation=self.saturation_value)
 
+        # Appliquer les ajustements de "highlights"
+        highlights_processor = processing.Ycurve()
+       
+        params = {
+        'start': [0, 0], 
+        'shadows': [10, 10], 
+        'blacks': [30, 30], 
+        'mediums': [50, 50], 
+        'whites': [70, 70], 
+        'highlights': [90, self.highlight_value],  # Assurez-vous d'utiliser la bonne clé
+        'end': [100, 100]
+        }
+        self.modified_image = highlights_processor.compute(self.modified_image, **params)
+
         # Mettre à jour l'image dans l'interface utilisateur
         if isinstance(self.modified_image, Image.Image):
             imageName = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
@@ -207,3 +224,18 @@ class App:
                 self.mainWindow.setEditorImage(self.modified_image.colorData)  # Extraire les données de l'image
         else:
             print(f"Unexpected processed image type: {type(self.modified_image)}")
+
+
+    def adjustHighlights(self, value: float) -> None:
+        print(f"adjustHighlights called with value: {value}")
+        self.highlight_value = value
+        self.applyAllAdjustments()
+            
+            
+    # def updateImageHighlights(self):
+    #     # Code pour appliquer l'ajustement des "highlights" à l'image
+    #     if self.modified_image:
+    #         process = hdrCore.Ycurve()
+    #         params = {'highlights': self.highlight_value}
+    #         self.modified_image = process.compute(self.original_image, **params)
+    #         self.mainWindow.updateImageDisplay(self.modified_image)

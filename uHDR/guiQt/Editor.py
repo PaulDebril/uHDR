@@ -31,6 +31,7 @@ class Editor(QTabWidget):
     exposureChanged = pyqtSignal(float)  
     saturationChanged = pyqtSignal(float)  
     contrastChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
 
     # class attributes
     ## signal
@@ -41,6 +42,8 @@ class Editor(QTabWidget):
 
         # attributes
         self.lightEdit : LightBlockScroll = LightBlockScroll() 
+
+        
         self.nbColorEditor : int = 5       
         self.colorEdits : list[ColorBlockScroll] = []
         for i in range(self.nbColorEditor): self.colorEdits.append(ColorBlockScroll())
@@ -56,3 +59,9 @@ class Editor(QTabWidget):
         self.lightEdit.exposureChanged.connect(self.exposureChanged)
         self.lightEdit.saturationChanged.connect(self.saturationChanged)
         self.lightEdit.contrastChanged.connect(self.contrastChanged)
+        self.lightEdit.highlightChanged.connect(self.onHighlightChanged)
+
+
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.highlightChanged.emit(value)

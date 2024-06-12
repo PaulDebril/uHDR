@@ -32,6 +32,8 @@ from guiQt.ImageWidget import ImageWidget
 # ------------------------------------------------------------------------------------------
 class EditorBlock(QSplitter):
     # class attributes
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
+
     ## signal
 
     # constructor
@@ -41,6 +43,8 @@ class EditorBlock(QSplitter):
         # attributes
         self.imageWidget : ImageWidget = ImageWidget() 
         self.edit : Editor = Editor()
+        self.edit.highlightChanged.connect(self.onHighlightChanged)
+
 
         # adding widgets to self (QSplitter)
         self.addWidget(self.imageWidget)
@@ -53,3 +57,6 @@ class EditorBlock(QSplitter):
         self.imageWidget.setPixmap(image)
 
         
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.highlightChanged.emit(value)

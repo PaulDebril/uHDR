@@ -31,6 +31,7 @@ class LightBlockScroll(QScrollArea):
     exposureChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
     contrastChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
     saturationChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
 
     # class attributes
     ## signal
@@ -44,6 +45,7 @@ class LightBlockScroll(QScrollArea):
         self.light : LightBlock = LightBlock()
         self.light.setMinimumSize(500,1500)
 
+
         ## Scroll Area Properties
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -54,7 +56,11 @@ class LightBlockScroll(QScrollArea):
         self.light.exposureChanged.connect(self.exposureChanged)
         self.light.saturationChanged.connect(self.saturationChanged)
         self.light.contrastChanged.connect(self.contrastChanged)
+        self.light.highlightChanged.connect(self.onHighlightChanged)
 
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.highlightChanged.emit(value)
 # ------------------------------------------------------------------------------------------
 
 
