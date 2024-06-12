@@ -51,6 +51,7 @@ class App:
         self.saturation_value = 0  # Stocker la valeur de saturation courante
         self.highlight_value = 90  # Assurez-vous que cette valeur est correctement initialisée
         self.shadows_value = 0  # Stocker la valeur des ombres courante
+        self.blacks_value = 0
 
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
@@ -79,6 +80,7 @@ class App:
         self.mainWindow.contrastChanged.connect(self.adjustContrast)
         self.mainWindow.highlightChanged.connect(self.adjustHighlights)
         self.mainWindow.shadowsChanged.connect(self.adjustShadows)
+        self.mainWindow.blacksChanged.connect(self.adjustBlacks)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
@@ -210,7 +212,7 @@ class App:
         params = {
         'start': [0, 0],
         'shadows': [10, self.shadows_value],
-        'blacks': [30, 30],
+        'blacks': [30, self.blacks_value],
         'mediums': [50, 50],
         'whites': [70, 70],
         'highlights': [90, self.highlight_value],
@@ -238,6 +240,12 @@ class App:
         print(f"adjustShadows called with value: {value}")
         self.shadows_value = value
         self.applyAllAdjustments()
+        
+    def adjustBlacks(self, value: float) -> None:
+        print(f"adjustBlacks called with value: {value}")
+        self.blacks_value = value
+        self.applyAllAdjustments()
+
             
     # def updateImageHighlights(self):
     #     # Code pour appliquer l'ajustement des "highlights" à l'image

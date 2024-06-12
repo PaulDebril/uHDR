@@ -13,6 +13,7 @@ class LightBlock(QFrame):
     saturationChanged = pyqtSignal(float)
     highlightChanged = pyqtSignal(float)
     shadowsChanged = pyqtSignal(float)
+    blacksChanged = pyqtSignal(float)
 
     def __init__(self):
         super().__init__()
@@ -41,6 +42,7 @@ class LightBlock(QFrame):
         self.curve : CurveWidget = CurveWidget()
         self.curve.highlightChanged.connect(self.onHighlightChanged)
         self.curve.shadowsChanged.connect(self.onShadowsChanged)
+        self.curve.blacksChanged.connect(self.onBlacksChanged)
 
         #self.memory : MemoGroup = MemoGroup()
 
@@ -60,6 +62,10 @@ class LightBlock(QFrame):
     def onShadowsChanged(self, value: float) -> None:
         print(f"in LightBlock: {value}")
         self.shadowsChanged.emit(value)
+        
+    def onBlacksChanged(self, value: float) -> None:
+        print(f"in LightBlock: {value}")
+        self.blacksChanged.emit(value)
 
     def emitExposureChanged(self, value):
         ev_value = value / 10.0  # Ajuster l'échelle si nécessaire
@@ -77,4 +83,5 @@ class LightBlock(QFrame):
         print(f"emitSaturationChanged triggered with value: {value}")
         # self.scalingValueLabel.setText(f"Scaling: {value:.1f}")
         self.saturationChanged.emit(value)
+
 
