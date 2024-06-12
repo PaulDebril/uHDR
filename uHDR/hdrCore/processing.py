@@ -376,7 +376,8 @@ class contrast(Processing):
         if contrastValue != defaultContrast:
             # contrast scaling is computed in prime colorspace
             if img.linear: 
-                if pref.computation == 'python':
+                computation = "python"
+                if computation == 'python':
                     start = timer()
                     res.colorData =     colour.cctf_encoding(res.colorData, function='sRGB') # encode to prime
                     res.linear =        False
