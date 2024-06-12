@@ -34,6 +34,7 @@ class Editor(QTabWidget):
     highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
     shadowsChanged = pyqtSignal(float)
     blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
 
     # class attributes
     ## signal
@@ -64,6 +65,7 @@ class Editor(QTabWidget):
         self.lightEdit.highlightChanged.connect(self.onHighlightChanged)
         self.lightEdit.shadowsChanged.connect(self.onShadowsChanged)
         self.lightEdit.blacksChanged.connect(self.onBlacksChanged)
+        self.lightEdit.mediumsChanged.connect(self.onMediumsChanged)
 
 
     def onHighlightChanged(self, value: float) -> None:
@@ -77,3 +79,7 @@ class Editor(QTabWidget):
     def onBlacksChanged(self, value: float) -> None:
         print(f"in Editor: {value}")
         self.blacksChanged.emit(value)
+        
+    def onMediumsChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.mediumsChanged.emit(value)

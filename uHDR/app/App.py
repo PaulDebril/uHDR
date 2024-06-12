@@ -52,6 +52,8 @@ class App:
         self.highlight_value = 90  # Assurez-vous que cette valeur est correctement initialisée
         self.shadows_value = 0  # Stocker la valeur des ombres courante
         self.blacks_value = 0
+        self.mediums_value = 0  # Stocker la valeur des médiums courante
+
 
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
@@ -81,6 +83,7 @@ class App:
         self.mainWindow.highlightChanged.connect(self.adjustHighlights)
         self.mainWindow.shadowsChanged.connect(self.adjustShadows)
         self.mainWindow.blacksChanged.connect(self.adjustBlacks)
+        self.mainWindow.mediumsChanged.connect(self.adjustMediums)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
@@ -213,7 +216,7 @@ class App:
         'start': [0, 0],
         'shadows': [10, self.shadows_value],
         'blacks': [30, self.blacks_value],
-        'mediums': [50, 50],
+        'mediums': [50, self.mediums_value],
         'whites': [70, 70],
         'highlights': [90, self.highlight_value],
         'end': [100, 100]
@@ -244,6 +247,11 @@ class App:
     def adjustBlacks(self, value: float) -> None:
         print(f"adjustBlacks called with value: {value}")
         self.blacks_value = value
+        self.applyAllAdjustments()
+        
+    def adjustMediums(self, value: float) -> None:
+        print(f"adjustMediums called with value: {value}")
+        self.mediums_value = value
         self.applyAllAdjustments()
 
             

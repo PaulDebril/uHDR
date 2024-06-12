@@ -37,6 +37,8 @@ class CurveWidget(QFrame):
     highlightChanged = pyqtSignal(float)
     shadowsChanged = pyqtSignal(float)
     blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
+
 
     # constructor
     def __init__(self : Self) -> None:
@@ -135,6 +137,8 @@ class CurveWidget(QFrame):
                 self.emitShadowsChanged(val)
             elif key == 'blacks':
                 self.emitBlacksChanged(val)
+            elif key == 'mediums':
+                self.emitMediumsChanged(val)
         # print('vaalllll', val)
         # if self.active: 
         #     self.setKey(key, val, False)
@@ -152,6 +156,10 @@ class CurveWidget(QFrame):
     def emitBlacksChanged(self, value: float) -> None:
         print(f"emitBlacksChanged in CurveWidget: {value}")
         self.blacksChanged.emit(value)
+        
+    def emitMediumsChanged(self, value: float) -> None:
+        print(f"emitMediumsChanged in CurveWidget: {value}")
+        self.mediumsChanged.emit(value)
         
     ## updateKeys
     def updateKeys(self : Self) -> None:
