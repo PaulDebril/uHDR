@@ -405,7 +405,7 @@ class contrast(Processing):
             res.colorData = scalingFactor*(res.colorData-0.5)+0.5
         
         end=timer()    
-        if pref.verbose: print(" [PROCESS-PROFILING] (",end-start,")>> contrast(",img.name,"):", kwargs)
+        print(" [PROCESS-PROFILING] (",end-start,")>> contrast(",img.name,"):", kwargs)
 
         return res
 # -----------------------------------------------------------------------------
