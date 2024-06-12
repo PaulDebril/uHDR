@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
     saturationChanged = pyqtSignal(float)
     contrastChanged = pyqtSignal(float)
     highlightChanged = pyqtSignal(float)
+    shadowsChanged = pyqtSignal(float)
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -92,10 +93,17 @@ class MainWindow(QMainWindow):
         self.editBlock.edit.saturationChanged.connect(self.saturationChanged)
         self.editBlock.edit.contrastChanged.connect(self.contrastChanged)
         self.editBlock.highlightChanged.connect(self.onHighlightChanged)
+        self.editBlock.shadowsChanged.connect(self.onShadowsChanged)
+
+
 
     def onHighlightChanged(self, value: float) -> None:
         print(f"in MainWindow: {value}")
         self.highlightChanged.emit(value)
+        
+    def onShadowsChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.shadowsChanged.emit(value)
 
     # methods
     # -------------------------------------------------------------------

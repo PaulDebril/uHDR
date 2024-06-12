@@ -50,6 +50,7 @@ class App:
         self.contrast_value = 0  # Stocker la valeur de contraste courant
         self.saturation_value = 0  # Stocker la valeur de saturation courante
         self.highlight_value = 90  # Assurez-vous que cette valeur est correctement initialisée
+        self.shadows_value = 0  # Stocker la valeur des ombres courante
 
         self.imagesManagement: ImageFiles = ImageFiles()
         self.imagesManagement.imageLoaded.connect(self.CBimageLoaded)
@@ -77,6 +78,7 @@ class App:
         self.mainWindow.saturationChanged.connect(self.adjustSaturation)
         self.mainWindow.contrastChanged.connect(self.adjustContrast)
         self.mainWindow.highlightChanged.connect(self.adjustHighlights)
+        self.mainWindow.shadowsChanged.connect(self.adjustShadows)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
@@ -206,15 +208,16 @@ class App:
         highlights_processor = processing.Ycurve()
        
         params = {
-        'start': [0, 0], 
-        'shadows': [10, 10], 
-        'blacks': [30, 30], 
-        'mediums': [50, 50], 
-        'whites': [70, 70], 
-        'highlights': [90, self.highlight_value],  # Assurez-vous d'utiliser la bonne clé
+        'start': [0, 0],
+        'shadows': [10, self.shadows_value],
+        'blacks': [30, 30],
+        'mediums': [50, 50],
+        'whites': [70, 70],
+        'highlights': [90, self.highlight_value],
         'end': [100, 100]
-        }
+    }
         self.modified_image = highlights_processor.compute(self.modified_image, **params)
+
 
         # Mettre à jour l'image dans l'interface utilisateur
         if isinstance(self.modified_image, Image.Image):
@@ -231,6 +234,10 @@ class App:
         self.highlight_value = value
         self.applyAllAdjustments()
             
+    def adjustShadows(self, value: float) -> None:
+        print(f"adjustShadows called with value: {value}")
+        self.shadows_value = value
+        self.applyAllAdjustments()
             
     # def updateImageHighlights(self):
     #     # Code pour appliquer l'ajustement des "highlights" à l'image

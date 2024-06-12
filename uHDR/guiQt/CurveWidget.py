@@ -35,6 +35,8 @@ import copy, time
 
 class CurveWidget(QFrame):
     highlightChanged = pyqtSignal(float)
+    shadowsChanged = pyqtSignal(float)
+
     # constructor
     def __init__(self : Self) -> None:
         super().__init__()
@@ -103,6 +105,8 @@ class CurveWidget(QFrame):
         self.mediums.valueChanged.connect(self.CBsliderChanged)
         self.whites.valueChanged.connect(self.CBsliderChanged)
         self.highlights.valueChanged.connect(self.CBsliderChanged)
+        self.shadows.valueChanged.connect(self.CBsliderChanged)
+
         # self.highlights.valueChanged.connect(self.emitHighlightChanged)
 
         #self.autoCurve.clicked.connect(self.controller.autoCurve)  #  zj add for semi-auto curve 
@@ -125,6 +129,8 @@ class CurveWidget(QFrame):
             self.setKey(key, val, False)
             if key == 'highlights':
                 self.emitHighlightChanged(val)
+            elif key == 'shadows':
+                self.emitShadowsChanged(val)
         # print('vaalllll', val)
         # if self.active: 
         #     self.setKey(key, val, False)
@@ -135,6 +141,9 @@ class CurveWidget(QFrame):
         print(f"emitHighlightChanged in CurveWidget: {value}")
         self.highlightChanged.emit(value)
         
+    def emitShadowsChanged(self, value: float) -> None:
+        print(f"emitShadowsChanged in CurveWidget: {value}")
+        self.shadowsChanged.emit(value)
         
     ## updateKeys
     def updateKeys(self : Self) -> None:
