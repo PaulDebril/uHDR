@@ -29,7 +29,8 @@ from guiQt.ColorBlockScroll import ColorBlockScroll
 # ------------------------------------------------------------------------------------------
 class Editor(QTabWidget):
     exposureChanged = pyqtSignal(float)  
-    contrastChanged = pyqtSignal(float)  # Ajoutez ce signal
+    saturationChanged = pyqtSignal(float)  
+    contrastChanged = pyqtSignal(float)
 
     # class attributes
     ## signal
@@ -53,4 +54,5 @@ class Editor(QTabWidget):
         for i in range(self.nbColorEditor): self.addTab(self.colorEdits[i],"Color "+str(i))
 
         self.lightEdit.exposureChanged.connect(self.exposureChanged)
+        self.lightEdit.saturationChanged.connect(self.saturationChanged)
         self.lightEdit.contrastChanged.connect(self.contrastChanged)
