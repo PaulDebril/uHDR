@@ -708,7 +708,7 @@ class saturation(Processing):
 
 
         end = timer()
-        if pref.verbose: print(" [PROCESS-PROFILING] (",end - start,")>> saturation(",img.name,"):", kwargs)
+        print(" [PROCESS-PROFILING] (",end - start,")>> saturation(",img.name,"):", kwargs)
 
         return res
 # -----------------------------------------------------------------------------

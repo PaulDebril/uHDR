@@ -70,6 +70,7 @@ class App:
         self.mainWindow.tagChanged.connect(self.CBtagChanged)
         self.mainWindow.scoreChanged.connect(self.CBscoreChanged)
         self.mainWindow.exposureChanged.connect(self.adjustExposure)
+        self.mainWindow.saturationChanged.connect(self.adjustSaturation)
         self.mainWindow.contrastChanged.connect(self.adjustContrast)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
@@ -204,6 +205,33 @@ class App:
 
                 contrast_processor = processing.contrast()
                 processed_image = contrast_processor.compute(img, contrast=value)
+
+                if isinstance(processed_image, image.Image):
+                    self.imagesManagement.images[imageName] = processed_image.colorData  # Extraire les données de l'image
+                    self.mainWindow.setEditorImage(processed_image.colorData)  # Extraire les données de l'image
+                else:
+                    print(f"Unexpected processed image type: {type(processed_image)}")
+                    
+    def adjustSaturation(self, value):
+        print(f"adjustsaturation called with value: {value}")
+        if self.selectedImageIdx is not None:
+            imageName = self.selectionMap.selectedIndexToImageName(self.selectedImageIdx)
+            print(f"Selected image name: {imageName}")
+            if imageName:
+                # Si l'image originale n'a pas encore été copiée, faites-le maintenant
+                if self.original_image is None:
+                    img = self.imagesManagement.getImage(imageName)
+                    # Vérifiez si l'image est une instance de hdrCore.image.Image
+                    if not isinstance(img, image.Image):
+                        # Si ce n'est pas le cas, convertissez-la en hdrCore.image.Image
+                        img = image.Image(self.imagesManagement.imagePath, imageName, img, image.imageType.SDR, False, image.ColorSpace.sRGB())
+                    self.original_image = img  # Stocker l'image originale
+
+                # Créer une copie de l'image originale
+                img = copy.deepcopy(self.original_image)
+
+                saturation_processor = processing.saturation()
+                processed_image = saturation_processor.compute(img, saturation=value)
 
                 if isinstance(processed_image, image.Image):
                     self.imagesManagement.images[imageName] = processed_image.colorData  # Extraire les données de l'image

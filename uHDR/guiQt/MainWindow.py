@@ -47,6 +47,7 @@ class MainWindow(QMainWindow):
     scoreChanged : pyqtSignal = pyqtSignal(int)
     scoreSelectionChanged : pyqtSignal = pyqtSignal(list)
     exposureChanged = pyqtSignal(float)
+    saturationChanged = pyqtSignal(float)
     contrastChanged = pyqtSignal(float)
 
     # constructor
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow):
         self.metaBlock.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
         self.editBlock.edit.exposureChanged.connect(self.exposureChanged)
+        self.editBlock.edit.saturationChanged.connect(self.saturationChanged)
         self.editBlock.edit.contrastChanged.connect(self.contrastChanged)
 
 

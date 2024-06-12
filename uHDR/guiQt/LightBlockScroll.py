@@ -30,6 +30,7 @@ from guiQt.LightBlock import LightBlock
 class LightBlockScroll(QScrollArea):
     exposureChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
     contrastChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
+    saturationChanged = pyqtSignal(float)
 
     # class attributes
     ## signal
@@ -51,6 +52,7 @@ class LightBlockScroll(QScrollArea):
         self.setWidget(self.light)
         
         self.light.exposureChanged.connect(self.exposureChanged)
+        self.light.saturationChanged.connect(self.saturationChanged)
         self.light.contrastChanged.connect(self.contrastChanged)
 
 # ------------------------------------------------------------------------------------------
