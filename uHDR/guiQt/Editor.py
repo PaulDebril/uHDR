@@ -31,6 +31,12 @@ class Editor(QTabWidget):
     exposureChanged = pyqtSignal(float)  
     saturationChanged = pyqtSignal(float)  
     contrastChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
+    shadowsChanged = pyqtSignal(float)
+    blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
+
 
     # class attributes
     ## signal
@@ -41,6 +47,8 @@ class Editor(QTabWidget):
 
         # attributes
         self.lightEdit : LightBlockScroll = LightBlockScroll() 
+
+        
         self.nbColorEditor : int = 5       
         self.colorEdits : list[ColorBlockScroll] = []
         for i in range(self.nbColorEditor): self.colorEdits.append(ColorBlockScroll())
@@ -56,3 +64,29 @@ class Editor(QTabWidget):
         self.lightEdit.exposureChanged.connect(self.exposureChanged)
         self.lightEdit.saturationChanged.connect(self.saturationChanged)
         self.lightEdit.contrastChanged.connect(self.contrastChanged)
+        self.lightEdit.highlightChanged.connect(self.onHighlightChanged)
+        self.lightEdit.shadowsChanged.connect(self.onShadowsChanged)
+        self.lightEdit.blacksChanged.connect(self.onBlacksChanged)
+        self.lightEdit.mediumsChanged.connect(self.onMediumsChanged)
+        self.lightEdit.whitesChanged.connect(self.onWhitesChanged)
+
+
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.highlightChanged.emit(value)
+        
+    def onShadowsChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.shadowsChanged.emit(value)
+        
+    def onBlacksChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.blacksChanged.emit(value)
+        
+    def onMediumsChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in Editor: {value}")
+        self.whitesChanged.emit(value)

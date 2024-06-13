@@ -599,11 +599,13 @@ class Ycurve(Processing):
 
         # results image
         res = copy.deepcopy(img)
+        print('kwargs', kwargs)
 
         if kwargs != defaultControlPoints:
 
-            if img.linear: 
-                if pref.computation == 'python':
+            if img.linear:
+                computation = "python" 
+                if computation == 'python':
                     start = timer()
                     res.colorData =     colour.cctf_encoding(res.colorData, function='sRGB') # encode to prime
                     res.linear =        False
@@ -651,7 +653,6 @@ class Ycurve(Processing):
                 res.colorData[:,:,2] = res.colorData[:,:,2]*colorDataFY/colorDataY
         
         end = timer()        
-        if pref.verbose: print(" [PROCESS-PROFILING] (",end - start,")>> Ycurve(",img.name,"):", kwargs)
 
         return res
 # -----------------------------------------------------------------------------

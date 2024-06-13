@@ -28,7 +28,7 @@ from PyQt6.QtCore import Qt, pyqtSignal, QLocale
 # ------------------------------------------------------------------------------------------
 class AdvanceSliderLine(QFrame):
     # static attributes
-    valueChanged : pyqtSignal = pyqtSignal(str,float)
+    valueChanged = pyqtSignal(str, float)  # Change to float
 
     # consructor
     def __init__(self: Self, name:str, default: float, range: tuple[int,int],rangeData : tuple[float, float] | None= None,nameLength : int = 10, precision : int =100) -> None:
@@ -101,6 +101,7 @@ class AdvanceSliderLine(QFrame):
             val : float = round(self.toValue(self.slider.value())*self.precision)/self.precision
             self.setValue(val)
             self.valueChanged.emit(self.name, val)
+            print(self.name, val)
 
     def CBeditChanged(self: Self) -> None:
         if self.active:

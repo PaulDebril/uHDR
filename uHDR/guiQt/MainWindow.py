@@ -49,6 +49,11 @@ class MainWindow(QMainWindow):
     exposureChanged = pyqtSignal(float)
     saturationChanged = pyqtSignal(float)
     contrastChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)
+    shadowsChanged = pyqtSignal(float)
+    blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -60,6 +65,7 @@ class MainWindow(QMainWindow):
         self.metaBlock : InfoSelPrefBlock =InfoSelPrefBlock(tags)
 
         self.editBlock : EditorBlock =EditorBlock()
+        
         self.imageGallery : AdvanceImageGallery  = AdvanceImageGallery(nbImages)
 
 
@@ -89,7 +95,33 @@ class MainWindow(QMainWindow):
         self.editBlock.edit.exposureChanged.connect(self.exposureChanged)
         self.editBlock.edit.saturationChanged.connect(self.saturationChanged)
         self.editBlock.edit.contrastChanged.connect(self.contrastChanged)
+        self.editBlock.highlightChanged.connect(self.onHighlightChanged)
+        self.editBlock.shadowsChanged.connect(self.onShadowsChanged)
+        self.editBlock.blacksChanged.connect(self.onBlacksChanged)
+        self.editBlock.mediumsChanged.connect(self.onMediumsChanged)
+        self.editBlock.whitesChanged.connect(self.onWhitesChanged)
 
+
+
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.highlightChanged.emit(value)
+        
+    def onShadowsChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.shadowsChanged.emit(value)
+        
+    def onBlacksChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.blacksChanged.emit(value)
+
+    def onMediumsChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in MainWindow: {value}")
+        self.whitesChanged.emit(value)
 
     # methods
     # -------------------------------------------------------------------

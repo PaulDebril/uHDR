@@ -32,6 +32,12 @@ from guiQt.ImageWidget import ImageWidget
 # ------------------------------------------------------------------------------------------
 class EditorBlock(QSplitter):
     # class attributes
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
+    shadowsChanged = pyqtSignal(float)
+    blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
+
     ## signal
 
     # constructor
@@ -41,6 +47,12 @@ class EditorBlock(QSplitter):
         # attributes
         self.imageWidget : ImageWidget = ImageWidget() 
         self.edit : Editor = Editor()
+        self.edit.highlightChanged.connect(self.onHighlightChanged)
+        self.edit.shadowsChanged.connect(self.onShadowsChanged)
+        self.edit.blacksChanged.connect(self.onBlacksChanged)
+        self.edit.mediumsChanged.connect(self.onMediumsChanged)
+        self.edit.whitesChanged.connect(self.onWhitesChanged)
+
 
         # adding widgets to self (QSplitter)
         self.addWidget(self.imageWidget)
@@ -53,3 +65,22 @@ class EditorBlock(QSplitter):
         self.imageWidget.setPixmap(image)
 
         
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.highlightChanged.emit(value)
+        
+    def onShadowsChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.shadowsChanged.emit(value)
+        
+    def onBlacksChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.blacksChanged.emit(value)
+        
+    def onMediumsChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in EditorBlock: {value}")
+        self.whitesChanged.emit(value)

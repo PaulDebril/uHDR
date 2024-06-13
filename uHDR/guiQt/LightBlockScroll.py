@@ -31,6 +31,12 @@ class LightBlockScroll(QScrollArea):
     exposureChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
     contrastChanged = pyqtSignal(float)  # Signal pour transmettre l'exposition
     saturationChanged = pyqtSignal(float)
+    highlightChanged = pyqtSignal(float)  # Signal pour les "highlights"
+    shadowsChanged = pyqtSignal(float)
+    blacksChanged = pyqtSignal(float)
+    mediumsChanged = pyqtSignal(float)
+    whitesChanged = pyqtSignal(float)
+
 
     # class attributes
     ## signal
@@ -44,6 +50,7 @@ class LightBlockScroll(QScrollArea):
         self.light : LightBlock = LightBlock()
         self.light.setMinimumSize(500,1500)
 
+
         ## Scroll Area Properties
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -54,7 +61,32 @@ class LightBlockScroll(QScrollArea):
         self.light.exposureChanged.connect(self.exposureChanged)
         self.light.saturationChanged.connect(self.saturationChanged)
         self.light.contrastChanged.connect(self.contrastChanged)
+        self.light.highlightChanged.connect(self.onHighlightChanged)
+        self.light.shadowsChanged.connect(self.onShadowsChanged)
+        self.light.blacksChanged.connect(self.onBlacksChanged)
+        self.light.mediumsChanged.connect(self.onMediumsChanged)
+        self.light.whitesChanged.connect(self.onWhitesChanged)
 
+
+    def onHighlightChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.highlightChanged.emit(value)
+        
+    def onShadowsChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.shadowsChanged.emit(value)
+        
+    def onBlacksChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.blacksChanged.emit(value)
+        
+    def onMediumsChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.mediumsChanged.emit(value)
+        
+    def onWhitesChanged(self, value: float) -> None:
+        print(f"in LightBlockScroll: {value}")
+        self.whitesChanged.emit(value)
 # ------------------------------------------------------------------------------------------
 
 
