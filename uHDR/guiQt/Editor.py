@@ -39,6 +39,8 @@ class Editor(QTabWidget):
     selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
     editorValueChanged = pyqtSignal(dict)
     showSelectionChanged = pyqtSignal(bool) # Signal pour afficher la mask ou non
+    lightnessMaskChanged = pyqtSignal(dict)
+
     
 
 
@@ -78,6 +80,8 @@ class Editor(QTabWidget):
         self.lightEdit.blacksChanged.connect(self.onBlacksChanged)
         self.lightEdit.mediumsChanged.connect(self.onMediumsChanged)
         self.lightEdit.whitesChanged.connect(self.onWhitesChanged)
+        self.lightEdit.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
 
     def onHighlightChanged(self, value: float) -> None:
@@ -106,3 +110,7 @@ class Editor(QTabWidget):
     def onShowSelectionChanged(self, show: bool) -> None:
         print("Editor.py : Afficher la mask ? : ", show)
         self.showSelectionChanged.emit(show)
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"in Editor: {mask}")
+        self.lightnessMaskChanged.emit(mask)

@@ -881,62 +881,63 @@ class colorEditor(Processing):
 # -----------------------------------------------------------------------------
 # --- Class lightnessMask ----------------------------------------------------
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# --- Class lightnessMask ----------------------------------------------------
+# -----------------------------------------------------------------------------
 class lightnessMask(Processing):
     """
-    TODO - Documentation de la classe lightnessMask
+    Lightness Mask operator.
+    
+    This operator applies different color masks based on the lightness levels 
+    (shadows, blacks, mediums, whites, highlights) to the image.
     """
     
     def compute(self, img, **kwargs):
         """
-        Lightness Mask operator.
+        Compute lightness masks and apply them to the image.
 
         Args:
-            img: hdrCore.image.Image
-                Required  : hdr image
-            kwargs: dict
-                Optionnal : parameters
-                TODO
+            img (hdrCore.image.Image, Required): input image
+            kwargs (dict, Optionnal): parameters
+                'shadows': bool
+                'blacks': bool
+                'mediums': bool
+                'whites': bool
+                'highlights': bool
                 
         Returns:
-            TODO
-                TODO
+            (hdrCore.image.Image): output image
         """
         start = timer()
         defaultMask = { 'shadows': False, 'blacks': False, 'mediums': False, 'whites': False, 'highlights': False}
-        rangeMask = {   'shadows': [0,20], 
-                         'blacks': [20,40], 
-                         'mediums': [40,60], 
-                         'whites': [60,80], 
-                         'highlights': [80,100]}
-        maskColor = {'shadows': [0,0,1], 
-                     'blacks': [0,1,1], 
-                     'mediums': [0,1,0], 
-                     'whites': [1,1,0], 
-                     'highlights': [1,0,0]}
-        if not kwargs: kwargs = defaultMask  # default value 
-
-        # results image
+        rangeMask = { 'shadows': [0, 20], 'blacks': [20, 40], 'mediums': [40, 60], 'whites': [60, 80], 'highlights': [80, 100]}
+        maskColor = { 'shadows': [0, 0, 1], 'blacks': [0, 1, 1], 'mediums': [0, 1, 0], 'whites': [1, 1, 0], 'highlights': [1, 0, 0]}
+        
+        if not kwargs:
+            kwargs = defaultMask  # Use default values if no kwargs provided
+        
+        # Results image
         res = copy.deepcopy(img)
 
         if kwargs != defaultMask:
-
-            if img.linear: 
-                res.colorData = colour.cctf_encoding(res.colorData, function='sRGB') # encode to prime   
+            if img.linear:
+                res.colorData = colour.cctf_encoding(res.colorData, function='sRGB')  # Encode to prime
                 res.linear = False
 
-            colorDataY = sRGB_to_XYZ(res.colorData, apply_cctf_decoding=False)[:,:,1]
+            colorDataY = sRGB_to_XYZ(res.colorData, apply_cctf_decoding=False)[:, :, 1]
             mask = copy.deepcopy(res.colorData)
 
             for key in rangeMask.keys():
-                if kwargs[key]: # mask on
-                    mask[(colorDataY >= rangeMask[key][0]/100)*(colorDataY<rangeMask[key][1]/100),:] = np.asarray(maskColor[key])
+                if kwargs.get(key, False):  # Mask on
+                    mask[(colorDataY >= rangeMask[key][0] / 100) * (colorDataY < rangeMask[key][1] / 100), :] = np.asarray(maskColor[key])
 
             res.colorData = mask
         
         end = timer()
-        if pref.verbose: print(" [PROCESS-PROFILING](",end - start,") >> lightnessMask(",res.name,"):", kwargs)
+        print(f" [PROCESS-PROFILING] ({end - start}) >> lightnessMask({res.name}): {kwargs}")
 
         return res
+
 # -----------------------------------------------------------------------------
 # --- Class geometry ---------------------------------------------------------
 # -----------------------------------------------------------------------------

@@ -62,6 +62,13 @@ class App:
             'exposure': 0.0,
             'contrast': 0.0
         }
+        self.lightnessMask_values: Dict[str, bool] = {
+            'shadows': False,
+            'blacks': False,
+            'mediums': False,
+            'whites': False,
+            'highlights': False
+        }
         self.show_mask = False
 
 
@@ -100,6 +107,8 @@ class App:
         self.mainWindow.editorValueChanged.connect(self.onEditorValueChanged)
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
         self.mainWindow.showSelectionChanged.connect(self.onShowSelectionChanged)  # Connecter le signal
+        self.mainWindow.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
         self.mainWindow.setPrefs()
         
@@ -208,7 +217,12 @@ class App:
         print(f"Editor values changed: {values}")
         self.editor_values.update(values)
         self.applyAllAdjustments()
-    
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        self.lightnessMask_values.update(mask)
+        self.applyAllAdjustments()
+        print(f"APP : Lightness mask changed: {mask}")
+        
     def onShowSelectionChanged(self, show: bool) -> None:
         self.show_mask = show
         print("APP : Afficher la mask ? : ", show)
@@ -232,6 +246,18 @@ class App:
         # Appliquer les ajustements de saturation
         saturation_processor = processing.saturation()
         self.modified_image = saturation_processor.compute(self.modified_image, saturation=self.saturation_value)
+        
+        lightnessmask_processor = processing.lightnessMask()
+        # Ensure all keys are present in lightnessmask_params
+        lightnessmask_params = {
+            'shadows': self.lightnessMask_values.get('shadows', False),
+            'blacks': self.lightnessMask_values.get('blacks', False),
+            'mediums': self.lightnessMask_values.get('mediums', False),
+            'whites': self.lightnessMask_values.get('whites', False),
+            'highlights': self.lightnessMask_values.get('highlights', False),
+        }
+
+        self.modified_image = lightnessmask_processor.compute(self.modified_image, **lightnessmask_params)
 
         # Appliquer les ajustements de "highlights"
         highlights_processor = processing.Ycurve()
@@ -245,9 +271,6 @@ class App:
         'highlights': [90, self.highlight_value],
         'end': [100, 100]
     }
-        
-        
-        
         print('param', params)
         self.modified_image = highlights_processor.compute(self.modified_image, **params)
 

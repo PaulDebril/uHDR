@@ -36,6 +36,8 @@ class LightBlockScroll(QScrollArea):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    lightnessMaskChanged = pyqtSignal(dict)
+
 
 
     # class attributes
@@ -66,6 +68,8 @@ class LightBlockScroll(QScrollArea):
         self.light.blacksChanged.connect(self.onBlacksChanged)
         self.light.mediumsChanged.connect(self.onMediumsChanged)
         self.light.whitesChanged.connect(self.onWhitesChanged)
+        self.light.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
 
     def onHighlightChanged(self, value: float) -> None:
@@ -87,6 +91,11 @@ class LightBlockScroll(QScrollArea):
     def onWhitesChanged(self, value: float) -> None:
         # print(f"in LightBlockScroll: {value}")
         self.whitesChanged.emit(value)
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"in LightBlockScroll: {mask}")
+        self.lightnessMaskChanged.emit(mask)
+
 # ------------------------------------------------------------------------------------------
 
 
