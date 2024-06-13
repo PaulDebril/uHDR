@@ -84,18 +84,14 @@ class LightBlock(QFrame):
     def emitExposureChanged(self, value):
         ev_value = value / 10.0  # Ajuster l'échelle si nécessaire
         print(f"emitExposureChanged triggered with value: {value}, ev_value: {ev_value}")
-        # self.exposureValueLabel.setText(f"Exposure: {ev_value:.1f}")
         self.exposureChanged.emit(ev_value)
 
     def emitScalingChanged(self, value):
         print(f"emitScalingChanged triggered with value: {value}")
-        # self.scalingValueLabel.setText(f"Scaling: {value:.1f}")
         self.contrastChanged.emit(value)
         
     def emitSaturationChanged(self, value):
-        
         print(f"emitSaturationChanged triggered with value: {value}")
-        # self.scalingValueLabel.setText(f"Scaling: {value:.1f}")
         self.saturationChanged.emit(value)
 
 

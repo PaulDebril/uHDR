@@ -44,16 +44,16 @@ class App:
         """uHDR v7 application"""
         # chargement des préférences
         preferences.Prefs.Prefs.load()
-        self.original_image = None  # Ajouter une variable pour stocker l'image originale
-        self.modified_image = None  # Ajouter une variable pour stocker l'image modifiée
-        self.exposure_value = 0  # Stocker la valeur d'exposition courante
-        self.contrast_value = 0  # Stocker la valeur de contraste courant
-        self.saturation_value = 0  # Stocker la valeur de saturation courante
-        self.highlight_value = 90  # Assurez-vous que cette valeur est correctement initialisée
-        self.shadows_value = 0  # Stocker la valeur des ombres courante
-        self.blacks_value = 0
-        self.mediums_value = 0  # Stocker la valeur des médiums courante
-        self.whites_value = 0  # Stocker la valeur des blancs courante
+        self.original_image = None  
+        self.modified_image = None  
+        self.exposure_value = 0 
+        self.contrast_value = 0  
+        self.saturation_value = 0  
+        self.highlight_value = 90  
+        self.shadows_value = 10 
+        self.blacks_value = 30
+        self.mediums_value = 50  
+        self.whites_value = 70  
 
 
         self.imagesManagement: ImageFiles = ImageFiles()
@@ -264,11 +264,3 @@ class App:
         self.whites_value = value
         self.applyAllAdjustments()
 
-            
-    # def updateImageHighlights(self):
-    #     # Code pour appliquer l'ajustement des "highlights" à l'image
-    #     if self.modified_image:
-    #         process = hdrCore.Ycurve()
-    #         params = {'highlights': self.highlight_value}
-    #         self.modified_image = process.compute(self.original_image, **params)
-    #         self.mainWindow.updateImageDisplay(self.modified_image)
