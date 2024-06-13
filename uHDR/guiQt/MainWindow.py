@@ -54,6 +54,11 @@ class MainWindow(QMainWindow):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    selectionChanged = pyqtSignal(dict)  # Ajouter le signal pour les changements de sélection
+    editorValueChanged = pyqtSignal(dict)
+    showSelectionChanged = pyqtSignal(bool)  # Ajouter le signal pour le changement de la case à cocher "show selection"
+
+
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -100,6 +105,9 @@ class MainWindow(QMainWindow):
         self.editBlock.blacksChanged.connect(self.onBlacksChanged)
         self.editBlock.mediumsChanged.connect(self.onMediumsChanged)
         self.editBlock.whitesChanged.connect(self.onWhitesChanged)
+        self.editBlock.selectionChanged.connect(self.onSelectionChanged)
+        self.editBlock.editorValueChanged.connect(self.onEditorValueChanged)
+        self.editBlock.showSelectionChanged.connect(self.onShowSelectionChanged)  # Connecter le signal
 
 
 
@@ -122,7 +130,19 @@ class MainWindow(QMainWindow):
     def onWhitesChanged(self, value: float) -> None:
         print(f"in MainWindow: {value}")
         self.whitesChanged.emit(value)
-
+        
+    def onSelectionChanged(self, selection: dict) -> None:
+        print(f"in MainWindow: selection {selection}")
+        self.selectionChanged.emit(selection)
+        
+    def onEditorValueChanged(self, values: dict) -> None:
+        print(f"in MainWindow: {values}")
+        self.editorValueChanged.emit(values)
+    
+    def onShowSelectionChanged(self, show: bool) -> None:
+        print("MW : Afficher la mask ? : ", show)
+        self.showSelectionChanged.emit(show)
+        
     # methods
     # -------------------------------------------------------------------
     ## reset
@@ -227,4 +247,7 @@ class MainWindow(QMainWindow):
     def CBscoreSelectionChanged(self: Self, scoreSelection: list) -> None:
         if debug : print(f'guiQt.MainWindow.CBscoreSelectionChanged({scoreSelection})') 
         self.scoreSelectionChanged.emit(scoreSelection)
+        
+        
+
 # ------------------------------------------------------------------------------------------

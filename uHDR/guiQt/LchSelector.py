@@ -28,6 +28,8 @@ from core import colourData, colourSpace
 # ------------------------------------------------------------------------------------------
 class LchSelector(QFrame):
     # class attributes
+    selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
+    showSelectionChanged = pyqtSignal(bool)
 
     # constructor
     def __init__(self : Self) -> None:
@@ -77,7 +79,12 @@ class LchSelector(QFrame):
         self.lightnessSelector : ChannelSelector = ChannelSelector('lightness',lightnessBarRGB, (0,200),(0,150)) 
 
         ### show selction
-        self.showSelection : QCheckBox = QCheckBox("show selction")
+        self.showSelection : QCheckBox = QCheckBox("show selection")
+        if self.showSelection.isChecked():
+            print("Trueeeeee")
+        else:
+             print("Faaaaaaalse")
+        self.showSelection.stateChanged.connect(self.onShowSelectionChanged)
 
         ### active checkbox
         self.checkBoxActive : QCheckBox = QCheckBox("active")
@@ -102,6 +109,8 @@ class LchSelector(QFrame):
         self.hueSelector.valuesChanged.connect(self.CBhueSelectionChanged)
         self.chromaSelector.valuesChanged.connect(self.CBchromaSelectionChanged)
         self.lightnessSelector.valuesChanged.connect(self.CBlightnessSelctionChanged)
+        
+        
 
     # methods
     ## callbacks
@@ -114,14 +123,32 @@ class LchSelector(QFrame):
         chromaBarRGB : np.ndarray= colourSpace.Lch_to_sRGB(chromaBarLch,apply_cctf_encoding=True, clip=True)
         self.chromaSelector.imageWidget.setPixmap(chromaBarRGB)
         self.updateView()
+        self.emitSelectionChanged()
 
     def CBchromaSelectionChanged(self: Self) -> None :
         self.chromaRange = self.chromaSelector.getValues()
         self.updateView()
+        self.emitSelectionChanged()
 
     def CBlightnessSelctionChanged(self: Self) -> None:
         self.LightnessRange = self.lightnessSelector.getValues()
         self.updateView()
+        self.emitSelectionChanged()
+        
+    def emitSelectionChanged(self):
+            selection = {
+            'hue': self.hueRange,
+            'chroma': self.chromaRange,
+            'lightness': self.LightnessRange
+        }
+            self.selectionChanged.emit(selection)
+            
+    def onShowSelectionChanged(self, state: int) -> None:
+        if self.showSelection.isChecked():
+             self.showSelectionChanged.emit(True)
+        else:
+          self.showSelectionChanged.emit(False)
+
 
     # update view
     def updateView(self: Self) -> None:

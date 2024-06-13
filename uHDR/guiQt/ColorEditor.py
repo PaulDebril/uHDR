@@ -26,6 +26,9 @@ from guiQt.AdvanceSliderLine import AdvanceSliderLine
 # --- class ColorEditor (QFrame) ------------------------------------------------------
 # ------------------------------------------------------------------------------------------
 class ColorEditor(QFrame):
+    colorChanged = pyqtSignal(dict)  # Signal pour les changements de couleur
+    valueChanged = pyqtSignal(dict)  # Signal pour les changements de valeur
+
     # class attributes
     ## signal
 
@@ -45,11 +48,29 @@ class ColorEditor(QFrame):
         self.exposure : AdvanceSliderLine = AdvanceSliderLine('exposure',0, (-300,300),(-3,+3)) # -3,+3 0.01
         self.contrast : AdvanceSliderLine = AdvanceSliderLine('contrast', 0.0,(-100,100))
 
+
+        self.hueShift.valueChanged.connect(self.onValueChanged)
+        self.saturation.valueChanged.connect(self.onValueChanged)
+        self.exposure.valueChanged.connect(self.onValueChanged)
+        self.contrast.valueChanged.connect(self.onValueChanged)
+        
         ## add widget to layout
         self.topLayout.addWidget(self.hueShift)
         self.topLayout.addWidget(self.saturation)
         self.topLayout.addWidget(self.exposure)
         self.topLayout.addWidget(self.contrast)
+        
+    def onValueChanged(self, name: str, value: float) -> None:
+        values = {
+            'hue shift': self.hueShift.slider.value(),
+            'saturation': self.saturation.slider.value(),
+            'exposure': self.exposure.slider.value(),
+            'contrast': self.contrast.slider.value()
+        }
+        self.valueChanged.emit(values)
+        
+        
+        
 
 # ------------------------------------------------------------------------------------------
         

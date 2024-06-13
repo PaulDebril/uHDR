@@ -875,7 +875,7 @@ class colorEditor(Processing):
             res.linear = False
 
         end = timer()
-        if pref.verbose: print(" [PROCESS-PROFILING](",end - start,") >> colorEditor(",img.name,"):", kwargs)
+        print(" [PROCESS-PROFILING](",end - start,") >> colorEditor(",img.name,"):", kwargs)
 
         return res
 # -----------------------------------------------------------------------------
