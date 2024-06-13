@@ -29,6 +29,7 @@ from app.Tags import Tags
 from app.SelectionMap import SelectionMap
 from guiQt.LightBlock import LightBlock
 from hdrCore import image as Image, processing
+from typing import Optional, Tuple, List, Dict
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMainWindow, QApplication
 
@@ -54,6 +55,8 @@ class App:
         self.blacks_value = 30
         self.mediums_value = 50  
         self.whites_value = 70  
+        self.color_selection: Dict[str, Tuple[int, int]] = {}
+
 
 
         self.imagesManagement: ImageFiles = ImageFiles()
@@ -86,6 +89,7 @@ class App:
         self.mainWindow.blacksChanged.connect(self.adjustBlacks)
         self.mainWindow.mediumsChanged.connect(self.adjustMediums)
         self.mainWindow.whitesChanged.connect(self.adjustWhites)
+        self.mainWindow.selectionChanged.connect(self.onSelectionChanged)
 
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
 
@@ -191,6 +195,11 @@ class App:
         print(f"adjustSaturation called with value: {value}")
         self.saturation_value = value
         self.applyAllAdjustments()
+        
+    # def onSelectionChanged(self, selection: dict) -> None:
+    #     # Utiliser le traitement existant pour mettre à jour l'image
+    #     print(f"Selection changed: {selection}")
+    #     self.applyAllAdjustments()
 
     def applyAllAdjustments(self):
         if self.modified_image is None:
@@ -224,9 +233,23 @@ class App:
         'end': [100, 100]
     }
         
+        
+        
         print('param', params)
         self.modified_image = highlights_processor.compute(self.modified_image, **params)
 
+
+        color_processor = processing.colorEditor()
+        color_params = {
+            'selection': self.color_selection,
+            'edit': {
+                'hue': 0.0,
+                'exposure': self.exposure_value,
+                'contrast': self.contrast_value,
+                'saturation': self.saturation_value
+            }
+        }
+        self.modified_image = color_processor.compute(self.modified_image, **color_params)
 
         # Mettre à jour l'image dans l'interface utilisateur
         if isinstance(self.modified_image, Image.Image):
@@ -239,28 +262,33 @@ class App:
 
 
     def adjustHighlights(self, value: float) -> None:
-        print(f"adjustHighlights called with value: {value}")
+        # print(f"adjustHighlights called with value: {value}")
         self.highlight_value = value
         self.applyAllAdjustments()
             
     def adjustShadows(self, value: float) -> None:
-        print(f"adjustShadows called with value: {value}")
+        # print(f"adjustShadows called with value: {value}")
         self.shadows_value = value
         self.applyAllAdjustments()
         
     def adjustBlacks(self, value: float) -> None:
-        print(f"adjustBlacks called with value: {value}")
+        # print(f"adjustBlacks called with value: {value}")
         self.blacks_value = value
         self.applyAllAdjustments()
         
     def adjustMediums(self, value: float) -> None:
-        print(f"adjustMediums called with value: {value}")
+        # print(f"adjustMediums called with value: {value}")
         self.mediums_value = value
         self.applyAllAdjustments()
         
     def adjustWhites(self, value: float) -> None:
-        print('------------------dpdpdp-')
-        print(f"adjustWhites called with value: {value}")
+        # print('------------------dpdpdp-')
+        # print(f"adjustWhites called with value: {value}")
         self.whites_value = value
+        self.applyAllAdjustments()
+
+    def onSelectionChanged(self, selection: Dict[str, Tuple[int, int]]) -> None:
+        print(f"Selection changed: {selection}")
+        self.color_selection = selection
         self.applyAllAdjustments()
 

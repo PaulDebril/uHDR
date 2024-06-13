@@ -36,6 +36,7 @@ class Editor(QTabWidget):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
 
 
     # class attributes
@@ -51,7 +52,10 @@ class Editor(QTabWidget):
         
         self.nbColorEditor : int = 5       
         self.colorEdits : list[ColorBlockScroll] = []
-        for i in range(self.nbColorEditor): self.colorEdits.append(ColorBlockScroll())
+        for i in range(self.nbColorEditor): 
+            colorEdit = ColorBlockScroll()
+            colorEdit.selectionChanged.connect(self.onSelectionChanged)
+            self.colorEdits.append(colorEdit)
 
         # QTabWidget settup
         self.setTabPosition(QTabWidget.TabPosition.East)
@@ -90,3 +94,6 @@ class Editor(QTabWidget):
     def onWhitesChanged(self, value: float) -> None:
         print(f"in Editor: {value}")
         self.whitesChanged.emit(value)
+        
+    def onSelectionChanged(self, selection: dict) -> None:
+        self.selectionChanged.emit(selection)

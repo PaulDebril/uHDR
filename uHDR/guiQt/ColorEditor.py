@@ -26,6 +26,8 @@ from guiQt.AdvanceSliderLine import AdvanceSliderLine
 # --- class ColorEditor (QFrame) ------------------------------------------------------
 # ------------------------------------------------------------------------------------------
 class ColorEditor(QFrame):
+    colorChanged = pyqtSignal(dict)  # Signal pour les changements de couleur
+
     # class attributes
     ## signal
 
@@ -50,6 +52,9 @@ class ColorEditor(QFrame):
         self.topLayout.addWidget(self.saturation)
         self.topLayout.addWidget(self.exposure)
         self.topLayout.addWidget(self.contrast)
+        
+        
+        
 
 # ------------------------------------------------------------------------------------------
         

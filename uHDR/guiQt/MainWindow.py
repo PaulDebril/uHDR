@@ -54,6 +54,8 @@ class MainWindow(QMainWindow):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    selectionChanged = pyqtSignal(dict)  # Ajouter le signal pour les changements de sélection
+
 
     # constructor
     # -------------------------------------------------------------------------------------------
@@ -100,7 +102,7 @@ class MainWindow(QMainWindow):
         self.editBlock.blacksChanged.connect(self.onBlacksChanged)
         self.editBlock.mediumsChanged.connect(self.onMediumsChanged)
         self.editBlock.whitesChanged.connect(self.onWhitesChanged)
-
+        self.editBlock.selectionChanged.connect(self.onSelectionChanged)
 
 
     def onHighlightChanged(self, value: float) -> None:
@@ -122,6 +124,10 @@ class MainWindow(QMainWindow):
     def onWhitesChanged(self, value: float) -> None:
         print(f"in MainWindow: {value}")
         self.whitesChanged.emit(value)
+        
+    def onSelectionChanged(self, selection: dict) -> None:
+        print(f"in MainWindow: selection {selection}")
+        self.selectionChanged.emit(selection)
 
     # methods
     # -------------------------------------------------------------------
@@ -227,4 +233,7 @@ class MainWindow(QMainWindow):
     def CBscoreSelectionChanged(self: Self, scoreSelection: list) -> None:
         if debug : print(f'guiQt.MainWindow.CBscoreSelectionChanged({scoreSelection})') 
         self.scoreSelectionChanged.emit(scoreSelection)
+        
+        
+
 # ------------------------------------------------------------------------------------------

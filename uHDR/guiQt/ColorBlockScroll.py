@@ -29,6 +29,8 @@ from guiQt.ColorEditorBlock import ColorEditorBlock
 class ColorBlockScroll(QScrollArea):
     # class attributes
     ## signal
+    selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
+
 
     # constructor
     def __init__(self : Self) -> None:
@@ -38,6 +40,9 @@ class ColorBlockScroll(QScrollArea):
         ## lightblock widget
         self.light : ColorEditorBlock = ColorEditorBlock()
         self.light.setMinimumSize(500,1200)
+        self.light.selectionChanged.connect(self.onSelectionChanged)
+
+
 
         ## Scroll Area Properties
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
@@ -46,6 +51,8 @@ class ColorBlockScroll(QScrollArea):
 
         self.setWidget(self.light)
 
+    def onSelectionChanged(self, selection):
+        self.selectionChanged.emit(selection)
 # ------------------------------------------------------------------------------------------
 
 

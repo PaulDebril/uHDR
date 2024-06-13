@@ -28,6 +28,8 @@ from core import colourData, colourSpace
 # ------------------------------------------------------------------------------------------
 class LchSelector(QFrame):
     # class attributes
+    selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
+
 
     # constructor
     def __init__(self : Self) -> None:
@@ -102,6 +104,8 @@ class LchSelector(QFrame):
         self.hueSelector.valuesChanged.connect(self.CBhueSelectionChanged)
         self.chromaSelector.valuesChanged.connect(self.CBchromaSelectionChanged)
         self.lightnessSelector.valuesChanged.connect(self.CBlightnessSelctionChanged)
+        
+        
 
     # methods
     ## callbacks
@@ -114,14 +118,25 @@ class LchSelector(QFrame):
         chromaBarRGB : np.ndarray= colourSpace.Lch_to_sRGB(chromaBarLch,apply_cctf_encoding=True, clip=True)
         self.chromaSelector.imageWidget.setPixmap(chromaBarRGB)
         self.updateView()
+        self.emitSelectionChanged()
 
     def CBchromaSelectionChanged(self: Self) -> None :
         self.chromaRange = self.chromaSelector.getValues()
         self.updateView()
+        self.emitSelectionChanged()
 
     def CBlightnessSelctionChanged(self: Self) -> None:
         self.LightnessRange = self.lightnessSelector.getValues()
         self.updateView()
+        self.emitSelectionChanged()
+        
+    def emitSelectionChanged(self):
+            selection = {
+            'hueRange': self.hueRange,
+            'chromaRange': self.chromaRange,
+            'lightnessRange': self.LightnessRange
+        }
+            self.selectionChanged.emit(selection)
 
     # update view
     def updateView(self: Self) -> None:

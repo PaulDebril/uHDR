@@ -31,6 +31,8 @@ from guiQt.MemoGroup import MemoGroup
 class ColorEditorBlock(QFrame):
     # class attributes
     ## signal
+    selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
+
 
     # constructor
     def __init__(self : Self) -> None:
@@ -47,10 +49,16 @@ class ColorEditorBlock(QFrame):
         self.selector : LchSelector =LchSelector()
         self.editor : ColorEditor = ColorEditor()
         #self.memory : MemoGroup = MemoGroup()
+        
+        self.selector.selectionChanged.connect(self.onSelectionChanged)
+
 
         ## add to layout
         self.topLayout.addWidget(self.selector)
         self.topLayout.addWidget(self.editor)
         #self.topLayout.addWidget(self.memory)
+        
+    def onSelectionChanged(self, selection):
+        self.selectionChanged.emit(selection)
 
 

@@ -69,23 +69,23 @@ class LightBlockScroll(QScrollArea):
 
 
     def onHighlightChanged(self, value: float) -> None:
-        print(f"in LightBlockScroll: {value}")
+        # print(f"in LightBlockScroll: {value}")
         self.highlightChanged.emit(value)
         
     def onShadowsChanged(self, value: float) -> None:
-        print(f"in LightBlockScroll: {value}")
+        # print(f"in LightBlockScroll: {value}")
         self.shadowsChanged.emit(value)
         
     def onBlacksChanged(self, value: float) -> None:
-        print(f"in LightBlockScroll: {value}")
+        # print(f"in LightBlockScroll: {value}")
         self.blacksChanged.emit(value)
         
     def onMediumsChanged(self, value: float) -> None:
-        print(f"in LightBlockScroll: {value}")
+        # print(f"in LightBlockScroll: {value}")
         self.mediumsChanged.emit(value)
         
     def onWhitesChanged(self, value: float) -> None:
-        print(f"in LightBlockScroll: {value}")
+        # print(f"in LightBlockScroll: {value}")
         self.whitesChanged.emit(value)
 # ------------------------------------------------------------------------------------------
 
