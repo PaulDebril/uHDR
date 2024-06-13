@@ -66,11 +66,23 @@ class CurveWidget(QFrame):
 
         self.curveWidget.plot(np.asarray([0.0,100]),np.asarray([0.0,100.0]),'r--', clear=True)
 
+
         # containers
         ## auto
         self.containerAutoActive : QFrame = QFrame() 
         self.hboxAutoActive : QHBoxLayout = QHBoxLayout() 
         self.containerAutoActive.setLayout(self.hboxAutoActive)
+        
+        # Add checkboxes
+        self.checkboxContainer : QFrame = QFrame()
+        self.checkboxLayout : QHBoxLayout = QHBoxLayout()
+        self.checkboxContainer.setLayout(self.checkboxLayout)
+
+        self.checkbox_shadows = QCheckBox("shadows")
+        self.checkbox_blacks = QCheckBox("blacks")
+        self.checkbox_mediums = QCheckBox("mediums")
+        self.checkbox_whites = QCheckBox("whites")
+        self.checkbox_highlights = QCheckBox("highlights")
 
         # shadows, blacks, mediums, whites, highlights
         self.shadows : AdvanceSliderLine = AdvanceSliderLine('shadows',self.default['shadows'][1],(0,100),(0,100),10) 
@@ -80,7 +92,15 @@ class CurveWidget(QFrame):
         self.highlights = AdvanceSliderLine('highlights', self.default['highlights'][1], (0, 100), (0, 100), 10)
 
         self.vbox.addWidget(self.curveWidget)
-        self.vbox.addWidget(self.containerAutoActive) #  zj add for semi-auto curve                                                                       
+        self.vbox.addWidget(self.containerAutoActive) #  zj add for semi-auto curve 
+        
+        self.vbox.addWidget(self.checkboxContainer)
+        self.checkboxLayout.addWidget(self.checkbox_shadows)
+        self.checkboxLayout.addWidget(self.checkbox_blacks)
+        self.checkboxLayout.addWidget(self.checkbox_mediums)
+        self.checkboxLayout.addWidget(self.checkbox_whites)
+        self.checkboxLayout.addWidget(self.checkbox_highlights)
+
         self.vbox.addWidget(self.highlights)
         self.vbox.addWidget(self.whites)
         self.vbox.addWidget(self.mediums)
