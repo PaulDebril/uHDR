@@ -39,6 +39,8 @@ class CurveWidget(QFrame):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    lightnessMaskChanged = pyqtSignal(dict)  # New signal
+
 
 
     # constructor
@@ -100,6 +102,13 @@ class CurveWidget(QFrame):
         self.checkboxLayout.addWidget(self.checkbox_mediums)
         self.checkboxLayout.addWidget(self.checkbox_whites)
         self.checkboxLayout.addWidget(self.checkbox_highlights)
+        
+        self.checkbox_shadows.stateChanged.connect(self.emitsLightnessMask)
+        self.checkbox_blacks.stateChanged.connect(self.emitsLightnessMask)
+        self.checkbox_mediums.stateChanged.connect(self.emitsLightnessMask)
+        self.checkbox_whites.stateChanged.connect(self.emitsLightnessMask)
+        self.checkbox_highlights.stateChanged.connect(self.emitsLightnessMask)
+
 
         self.vbox.addWidget(self.highlights)
         self.vbox.addWidget(self.whites)
@@ -187,6 +196,18 @@ class CurveWidget(QFrame):
     def emitWhitesChanged(self, value: float) -> None:
         print(f"emitWhitesChanged in CurveWidget: {value}")
         self.whitesChanged.emit(value)
+        
+    def emitsLightnessMask(self):
+        mask = {
+        'shadows': self.checkbox_shadows.isChecked(),
+        'blacks': self.checkbox_blacks.isChecked(),
+        'mediums': self.checkbox_mediums.isChecked(),
+        'whites': self.checkbox_whites.isChecked(),
+        'highlights': self.checkbox_highlights.isChecked()
+        }
+        print("CurveWidget EMIT:",mask)
+        self.lightnessMaskChanged.emit(mask)
+
         
     ## updateKeys
     def updateKeys(self : Self) -> None:

@@ -57,6 +57,8 @@ class MainWindow(QMainWindow):
     selectionChanged = pyqtSignal(dict)  # Ajouter le signal pour les changements de sélection
     editorValueChanged = pyqtSignal(dict)
     showSelectionChanged = pyqtSignal(bool)  # Ajouter le signal pour le changement de la case à cocher "show selection"
+    lightnessMaskChanged = pyqtSignal(dict)
+
 
 
 
@@ -108,6 +110,8 @@ class MainWindow(QMainWindow):
         self.editBlock.selectionChanged.connect(self.onSelectionChanged)
         self.editBlock.editorValueChanged.connect(self.onEditorValueChanged)
         self.editBlock.showSelectionChanged.connect(self.onShowSelectionChanged)  # Connecter le signal
+        self.editBlock.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
 
 
@@ -142,6 +146,11 @@ class MainWindow(QMainWindow):
     def onShowSelectionChanged(self, show: bool) -> None:
         print("MW : Afficher la mask ? : ", show)
         self.showSelectionChanged.emit(show)
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"in MainWindow: {mask}")
+        self.lightnessMaskChanged.emit(mask)
+
         
     # methods
     # -------------------------------------------------------------------

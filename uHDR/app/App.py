@@ -100,6 +100,8 @@ class App:
         self.mainWindow.editorValueChanged.connect(self.onEditorValueChanged)
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
         self.mainWindow.showSelectionChanged.connect(self.onShowSelectionChanged)  # Connecter le signal
+        self.mainWindow.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
         self.mainWindow.setPrefs()
         
@@ -208,7 +210,10 @@ class App:
         print(f"Editor values changed: {values}")
         self.editor_values.update(values)
         self.applyAllAdjustments()
-    
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"APP : Lightness mask changed: {mask}")
+        
     def onShowSelectionChanged(self, show: bool) -> None:
         self.show_mask = show
         print("APP : Afficher la mask ? : ", show)

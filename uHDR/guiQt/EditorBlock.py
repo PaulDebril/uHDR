@@ -40,6 +40,8 @@ class EditorBlock(QSplitter):
     selectionChanged = pyqtSignal(dict)
     editorValueChanged = pyqtSignal(dict)
     showSelectionChanged = pyqtSignal(bool)
+    lightnessMaskChanged = pyqtSignal(dict)
+
     ## signal
 
     # constructor
@@ -57,6 +59,8 @@ class EditorBlock(QSplitter):
         self.edit.selectionChanged.connect(self.onSelectionChanged)
         self.edit.editorValueChanged.connect(self.onColorChanged)
         self.edit.showSelectionChanged.connect(self.onShowSelectionChanged)
+        self.edit.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
 
         # adding widgets to self (QSplitter)
@@ -99,3 +103,7 @@ class EditorBlock(QSplitter):
     def onShowSelectionChanged(self, show: bool) -> None:
         print("EditorBlock.py : Afficher la mask ? : ", show)
         self.showSelectionChanged.emit(show)
+        
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"in EditorBlock: {mask}")
+        self.lightnessMaskChanged.emit(mask)

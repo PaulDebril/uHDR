@@ -16,6 +16,8 @@ class LightBlock(QFrame):
     blacksChanged = pyqtSignal(float)
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
+    lightnessMaskChanged = pyqtSignal(dict)
+
 
 
     def __init__(self):
@@ -48,6 +50,8 @@ class LightBlock(QFrame):
         self.curve.blacksChanged.connect(self.onBlacksChanged)
         self.curve.mediumsChanged.connect(self.onMediumsChanged)
         self.curve.whitesChanged.connect(self.onWhitesChanged)
+        self.curve.lightnessMaskChanged.connect(self.onLightnessMaskChanged)
+
 
         #self.memory : MemoGroup = MemoGroup()
 
@@ -93,5 +97,9 @@ class LightBlock(QFrame):
     def emitSaturationChanged(self, value):
         # print(f"emitSaturationChanged triggered with value: {value}")
         self.saturationChanged.emit(value)
+
+    def onLightnessMaskChanged(self, mask: dict) -> None:
+        print(f"in LightBlock: {mask}")
+        self.lightnessMaskChanged.emit(mask)
 
 
