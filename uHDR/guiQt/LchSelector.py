@@ -29,7 +29,7 @@ from core import colourData, colourSpace
 class LchSelector(QFrame):
     # class attributes
     selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
-
+    showSelectionChanged = pyqtSignal(bool)
 
     # constructor
     def __init__(self : Self) -> None:
@@ -79,7 +79,12 @@ class LchSelector(QFrame):
         self.lightnessSelector : ChannelSelector = ChannelSelector('lightness',lightnessBarRGB, (0,200),(0,150)) 
 
         ### show selction
-        self.showSelection : QCheckBox = QCheckBox("show selction")
+        self.showSelection : QCheckBox = QCheckBox("show selection")
+        if self.showSelection.isChecked():
+            print("Trueeeeee")
+        else:
+             print("Faaaaaaalse")
+        self.showSelection.stateChanged.connect(self.onShowSelectionChanged)
 
         ### active checkbox
         self.checkBoxActive : QCheckBox = QCheckBox("active")
@@ -132,11 +137,18 @@ class LchSelector(QFrame):
         
     def emitSelectionChanged(self):
             selection = {
-            'hueRange': self.hueRange,
-            'chromaRange': self.chromaRange,
-            'lightnessRange': self.LightnessRange
+            'hue': self.hueRange,
+            'chroma': self.chromaRange,
+            'lightness': self.LightnessRange
         }
             self.selectionChanged.emit(selection)
+            
+    def onShowSelectionChanged(self, state: int) -> None:
+        if self.showSelection.isChecked():
+             self.showSelectionChanged.emit(True)
+        else:
+          self.showSelectionChanged.emit(False)
+
 
     # update view
     def updateView(self: Self) -> None:

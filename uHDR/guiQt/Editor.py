@@ -37,6 +37,9 @@ class Editor(QTabWidget):
     mediumsChanged = pyqtSignal(float)
     whitesChanged = pyqtSignal(float)
     selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
+    editorValueChanged = pyqtSignal(dict)
+    showSelectionChanged = pyqtSignal(bool) # Signal pour afficher la mask ou non
+    
 
 
     # class attributes
@@ -55,6 +58,8 @@ class Editor(QTabWidget):
         for i in range(self.nbColorEditor): 
             colorEdit = ColorBlockScroll()
             colorEdit.selectionChanged.connect(self.onSelectionChanged)
+            colorEdit.editorValueChanged.connect(self.editorValueChanged.emit)
+            colorEdit.showSelectionChanged.connect(self.onShowSelectionChanged)
             self.colorEdits.append(colorEdit)
 
         # QTabWidget settup
@@ -97,3 +102,7 @@ class Editor(QTabWidget):
         
     def onSelectionChanged(self, selection: dict) -> None:
         self.selectionChanged.emit(selection)
+        
+    def onShowSelectionChanged(self, show: bool) -> None:
+        print("Editor.py : Afficher la mask ? : ", show)
+        self.showSelectionChanged.emit(show)

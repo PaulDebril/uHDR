@@ -47,7 +47,7 @@ class App:
         preferences.Prefs.Prefs.load()
         self.original_image = None  
         self.modified_image = None  
-        self.exposure_value = 0 
+        self.exposure_value = 0
         self.contrast_value = 0  
         self.saturation_value = 0  
         self.highlight_value = 90  
@@ -56,6 +56,13 @@ class App:
         self.mediums_value = 50  
         self.whites_value = 70  
         self.color_selection: Dict[str, Tuple[int, int]] = {}
+        self.editor_values: Dict[str, float] = {
+            'hue shift': 0.0,
+            'saturation': 0.0,
+            'exposure': 0.0,
+            'contrast': 0.0
+        }
+        self.show_mask = False
 
 
 
@@ -90,8 +97,9 @@ class App:
         self.mainWindow.mediumsChanged.connect(self.adjustMediums)
         self.mainWindow.whitesChanged.connect(self.adjustWhites)
         self.mainWindow.selectionChanged.connect(self.onSelectionChanged)
-
+        self.mainWindow.editorValueChanged.connect(self.onEditorValueChanged)
         self.mainWindow.scoreSelectionChanged.connect(self.CBscoreSelectionChanged)
+        self.mainWindow.showSelectionChanged.connect(self.onShowSelectionChanged)  # Connecter le signal
 
         self.mainWindow.setPrefs()
         
@@ -196,10 +204,15 @@ class App:
         self.saturation_value = value
         self.applyAllAdjustments()
         
-    # def onSelectionChanged(self, selection: dict) -> None:
-    #     # Utiliser le traitement existant pour mettre à jour l'image
-    #     print(f"Selection changed: {selection}")
-    #     self.applyAllAdjustments()
+    def onEditorValueChanged(self, values: dict) -> None:
+        print(f"Editor values changed: {values}")
+        self.editor_values.update(values)
+        self.applyAllAdjustments()
+    
+    def onShowSelectionChanged(self, show: bool) -> None:
+        self.show_mask = show
+        print("APP : Afficher la mask ? : ", show)
+        self.applyAllAdjustments()
 
     def applyAllAdjustments(self):
         if self.modified_image is None:
@@ -243,13 +256,16 @@ class App:
         color_params = {
             'selection': self.color_selection,
             'edit': {
-                'hue': 0.0,
-                'exposure': self.exposure_value,
-                'contrast': self.contrast_value,
-                'saturation': self.saturation_value
-            }
+                'hue': self.editor_values['hue shift'],
+                'exposure': self.editor_values['exposure'],
+                'contrast': self.editor_values['contrast'],
+                'saturation': self.editor_values['saturation']
+            },
+            'tolerance': 0.1,
+            'mask': self.show_mask,  # Utilisez la valeur du masque ici
         }
         self.modified_image = color_processor.compute(self.modified_image, **color_params)
+
 
         # Mettre à jour l'image dans l'interface utilisateur
         if isinstance(self.modified_image, Image.Image):

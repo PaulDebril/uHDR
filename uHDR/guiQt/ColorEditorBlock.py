@@ -32,7 +32,8 @@ class ColorEditorBlock(QFrame):
     # class attributes
     ## signal
     selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
-
+    editorValueChanged = pyqtSignal(dict)  # Signal pour les changements de valeurs de l'éditeur
+    showSelectionChanged = pyqtSignal(bool) # Signal pour afficher la mask ou non
 
     # constructor
     def __init__(self : Self) -> None:
@@ -51,6 +52,8 @@ class ColorEditorBlock(QFrame):
         #self.memory : MemoGroup = MemoGroup()
         
         self.selector.selectionChanged.connect(self.onSelectionChanged)
+        self.selector.showSelectionChanged.connect(self.onShowSelectionChanged)
+        self.editor.valueChanged.connect(self.onEditorValueChanged)
 
 
         ## add to layout
@@ -60,5 +63,11 @@ class ColorEditorBlock(QFrame):
         
     def onSelectionChanged(self, selection):
         self.selectionChanged.emit(selection)
+    
+    def onShowSelectionChanged(self, show: bool):
+        print("ColorEditorBLock : Afficher la mask ? : ", show)
+        self.showSelectionChanged.emit(show)
 
+    def onEditorValueChanged(self, values):
+        self.editorValueChanged.emit(values)
 

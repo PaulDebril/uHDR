@@ -30,7 +30,8 @@ class ColorBlockScroll(QScrollArea):
     # class attributes
     ## signal
     selectionChanged = pyqtSignal(dict)  # Signal pour les changements de sélection
-
+    editorValueChanged = pyqtSignal(dict)  # Signal pour les changements de valeurs de l'éditeur
+    showSelectionChanged = pyqtSignal(bool) # Signal pour afficher la mask ou non
 
     # constructor
     def __init__(self : Self) -> None:
@@ -41,6 +42,8 @@ class ColorBlockScroll(QScrollArea):
         self.light : ColorEditorBlock = ColorEditorBlock()
         self.light.setMinimumSize(500,1200)
         self.light.selectionChanged.connect(self.onSelectionChanged)
+        self.light.editorValueChanged.connect(self.editorValueChanged.emit)
+        self.light.showSelectionChanged.connect(self.onShowSelectionChanged)
 
 
 
@@ -53,6 +56,10 @@ class ColorBlockScroll(QScrollArea):
 
     def onSelectionChanged(self, selection):
         self.selectionChanged.emit(selection)
+        
+    def onShowSelectionChanged(self, show: bool) -> None:
+        print("ColorBLockScroll : Afficher la mask ? : ", show)
+        self.showSelectionChanged.emit(show)
 # ------------------------------------------------------------------------------------------
 
 
